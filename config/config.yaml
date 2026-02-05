@@ -1,0 +1,42 @@
+# 小说智能创作 Agent 配置文件
+
+# 应用配置
+app:
+  name: "Novel Creation Agent"
+  version: "0.1.0"
+  debug: true
+
+# API 服务配置
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true
+
+# 记忆系统配置
+memory:
+  storage_path: "./data/memory"
+  vector_db:
+    enabled: false  # 待启用 Chroma
+    type: "chroma"
+    path: "./data/vector_db"
+    embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+
+# LLM 配置
+llm:
+  provider: "openai"
+  model: "gpt-4"
+  temperature: 0.7
+  max_tokens: 2000
+  api_key: ""  # 从环境变量读取
+
+# 创作配置
+story:
+  default_chapter_length: 3000  # 章节目标字数
+  max_outline_levels: 3         # 大纲层级深度
+  review_required: true         # 是否需要用户审核
+
+# 搜索配置
+search:
+  enabled: true
+  max_results: 10
+  cache_enabled: true
