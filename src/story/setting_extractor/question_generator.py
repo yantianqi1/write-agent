@@ -1,99 +1,310 @@
 """
-Question generation for collecting missing setting information.
+Prompt generation for AI setting completion (INTERNAL USE).
 
-This module provides functionality to generate intelligent follow-up
-questions to collect missing information from users.
+This module provides functionality to generate internal prompts for
+AI to auto-complete missing settings. Users never see these prompts.
+
+IMPLICIT MODE: This is for AI internal use only, not for user interaction.
 """
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Dict, Any
+from dataclasses import dataclass
 import random
-from .models import MissingInfo, ExtractedSettings
+from .models import MissingInfo, ExtractedSettings, SettingType
 
 
-class QuestionGenerator(ABC):
+@dataclass
+class CompletionPrompt:
+    """Internal prompt for AI setting completion."""
+    setting_type: str
+    field_name: str
+    completion_instruction: str
+    context_hints: List[str]
+    default_template: str
+
+
+class PromptGenerator(ABC):
     """
-    Abstract base class for question generators.
+    Abstract base class for internal prompt generators.
 
-    Question generators analyze missing information and create
-    engaging follow-up questions to collect complete settings.
+    Prompt generators create instructions for AI to auto-complete
+    missing settings. These are INTERNAL prompts, never shown to users.
     """
 
     @abstractmethod
-    def generate_questions(self,
-                          settings: ExtractedSettings,
-                          missing_info: List[MissingInfo],
-                          count: int = 3) -> List[str]:
+    def generate_completion_prompts(self,
+                                   settings: ExtractedSettings,
+                                   completion_tasks: Dict[str, List[str]],
+                                   count: int = 10) -> List[CompletionPrompt]:
         """
-        Generate follow-up questions based on missing information.
+        Generate internal completion prompts.
 
         Args:
             settings: Current extracted settings
-            missing_info: List of missing information
-            count: Maximum number of questions to generate
+            completion_tasks: Dictionary of tasks per setting type
+            count: Maximum number of prompts to generate
 
         Returns:
-            List of follow-up questions (strings)
+            List of CompletionPrompt for AI to process
         """
         pass
 
 
-class PriorityQuestionGenerator(QuestionGenerator):
+class InternalPromptGenerator(PromptGenerator):
     """
-    Question generator that prioritizes by missing info priority.
+    Internal prompt generator for AI auto-completion.
 
-    This generator selects the most important missing information
-    and generates diverse questions to collect it.
+    This generator creates detailed instructions for AI to
+    intelligently fill in missing setting information.
     """
 
-    # Question variations for different contexts
-    OPENING_PHRASES = [
-        "Could you tell me",
-        "I'd like to know",
-        "Can you describe",
-        "What about",
-        "Let's explore"
-    ]
+    # Completion instructions by setting type and field
+    CHARACTER_INSTRUCTIONS = {
+        "name": "Generate a fitting name for the character based on story context",
+        "role": "Infer or assign a narrative role (protagonist, antagonist, supporting)",
+        "personality": "Create a personality that fits the story genre and character role",
+        "background": "Generate a backstory that explains the character's motivations",
+        "appearance": "Create physical appearance that reflects their personality",
+        "abilities": "Give abilities/skills appropriate for the world type and character role",
+        "relationships": "Define relationships that create story conflict and depth"
+    }
 
-    CLOSING_PHRASES = [
-        "This will help create a more detailed story.",
-        "This information will be useful for the plot.",
-        "This adds depth to the setting.",
-        "This helps shape the narrative.",
-        "This enriches the story world."
-    ]
+    WORLD_INSTRUCTIONS = {
+        "world_type": "Infer from story description or default to contemporary",
+        "era": "Match era to world type (future for sci-fi, past for fantasy/historical)",
+        "geography": "Create key locations relevant to the plot",
+        "magic_system": "Design magic/ability system consistent with world type",
+        "technology_level": "Set technology level appropriate for world type",
+        "rules": "Define world rules that create interesting constraints",
+        "factions": "Create factions that generate conflict and political intrigue"
+    }
+
+    PLOT_INSTRUCTIONS = {
+        "inciting_incident": "Create an event that disrupts the protagonist's normal life",
+        "conflict": "Design a central conflict that forces character growth",
+        "climax": "Plan a climactic confrontation that resolves the main conflict",
+        "resolution": "Create a satisfying resolution that shows character change",
+        "themes": "Infer themes from the story concept and character arcs",
+        "rising_action": "Design plot points that escalate tension toward climax"
+    }
+
+    STYLE_INSTRUCTIONS = {
+        "pov": "Default to third person limited unless first person fits the story better",
+        "writing_style": "Match writing style to genre and tone",
+        "tone": "Infer from story description (humor for light concepts, serious for dark)",
+        "pacing": "Set pacing appropriate for genre (fast for action, slow for drama)",
+        "tense": "Default to past tense, use present tense for immediacy"
+    }
 
     def __init__(self, diversity_factor: float = 0.3):
         """
-        Initialize the priority question generator.
+        Initialize the internal prompt generator.
 
         Args:
-            diversity_factor: How much to randomize question selection (0.0-1.0)
-                             Higher = more diversity, Lower = more priority-focused
+            diversity_factor: How much to diversify completion (0.0-1.0)
         """
         self.diversity_factor = diversity_factor
+
+    def generate_completion_prompts(self,
+                                   settings: ExtractedSettings,
+                                   completion_tasks: Dict[str, List[str]],
+                                   count: int = 10) -> List[CompletionPrompt]:
+        """
+        Generate internal completion prompts for AI.
+
+        Args:
+            settings: Current extracted settings
+            completion_tasks: Dictionary of tasks per setting type
+            count: Maximum number of prompts to generate
+
+        Returns:
+            List of CompletionPrompt for AI processing
+        """
+        prompts = []
+
+        # Generate prompts for each setting type
+        for setting_type, fields in completion_tasks.items():
+            if not fields:
+                continue
+
+            setting_prompts = self._generate_prompts_for_type(
+                setting_type, fields, settings, count
+            )
+            prompts.extend(setting_prompts)
+
+        return prompts[:count]
+
+    def _generate_prompts_for_type(self,
+                                   setting_type: str,
+                                   fields: List[str],
+                                   settings: ExtractedSettings,
+                                   count: int) -> List[CompletionPrompt]:
+        """Generate prompts for a specific setting type."""
+        prompts = []
+
+        for field in fields:
+            instruction = self._get_instruction(setting_type, field)
+            context_hints = self._get_context_hints(setting_type, field, settings)
+            default_template = self._get_default_template(setting_type, field)
+
+            prompts.append(CompletionPrompt(
+                setting_type=setting_type,
+                field_name=field,
+                completion_instruction=instruction,
+                context_hints=context_hints,
+                default_template=default_template
+            ))
+
+        return prompts
+
+    def _get_instruction(self, setting_type: str, field: str) -> str:
+        """Get completion instruction for a field."""
+        instructions = {
+            "character": self.CHARACTER_INSTRUCTIONS,
+            "world": self.WORLD_INSTRUCTIONS,
+            "plot": self.PLOT_INSTRUCTIONS,
+            "style": self.STYLE_INSTRUCTIONS
+        }
+        return instructions.get(setting_type, {}).get(
+            field,
+            f"Generate appropriate {field} based on story context"
+        )
+
+    def _get_context_hints(self, setting_type: str,
+                          field: str,
+                          settings: ExtractedSettings) -> List[str]:
+        """Get context hints for completion."""
+        hints = []
+
+        # Add world type context
+        if settings.world and settings.world.world_type:
+            hints.append(f"World type: {settings.world.world_type}")
+
+        # Add plot context
+        if settings.plot and settings.plot.conflict:
+            hints.append(f"Main conflict: {settings.plot.conflict}")
+
+        # Add character context for non-character fields
+        if setting_type != "character" and settings.characters:
+            main_char = settings.characters[0] if settings.characters else None
+            if main_char:
+                char_desc = f"Main character: {main_char.name or 'Unnamed'}"
+                if main_char.role:
+                    char_desc += f" ({main_char.role})"
+                if main_char.personality:
+                    char_desc += f" - {main_char.personality}"
+                hints.append(char_desc)
+
+        return hints
+
+    def _get_default_template(self, setting_type: str, field: str) -> str:
+        """Get default value template."""
+        templates = {
+            ("character", "name"): "Generate a name fitting the world type",
+            ("character", "personality"): "Brave, kind, and growing",
+            ("character", "role"): "Protagonist",
+            ("character", "background"): "An ordinary person facing extraordinary circumstances",
+            ("world", "world_type"): "Contemporary",
+            ("world", "era"): "21st century",
+            ("plot", "conflict"): "The protagonist must overcome a significant challenge",
+            ("plot", "inciting_incident"): "An unexpected event changes everything",
+            ("style", "pov"): "Third person limited",
+            ("style", "tense"): "Past tense",
+            ("style", "tone"): "Balanced",
+            ("style", "pacing"): "Medium"
+        }
+        return templates.get((setting_type, field), "Use sensible default")
+
+
+# Backward compatibility - keep old class name but redirect to new behavior
+class QuestionGenerator(PromptGenerator):
+    """
+    DEPRECATED: Use PromptGenerator instead.
+
+    This class is kept for backward compatibility but now
+    generates internal prompts instead of user questions.
+    """
+
+    def __init__(self, internal_mode: bool = True):
+        """
+        Initialize (deprecated wrapper).
+
+        Args:
+            internal_mode: Must be True (forwarding to PromptGenerator)
+        """
+        self._internal = InternalPromptGenerator()
 
     def generate_questions(self,
                           settings: ExtractedSettings,
                           missing_info: List[MissingInfo],
                           count: int = 3) -> List[str]:
         """
-        Generate follow-up questions based on missing information.
+        DEPRECATED: Use generate_completion_prompts instead.
 
-        This method selects the most important missing information
-        and generates engaging questions.
+        This method now returns internal completion instructions
+        rather than user-facing questions.
+        """
+        # Convert missing_info to completion_tasks format
+        completion_tasks = {
+            "character": [],
+            "world": [],
+            "plot": [],
+            "style": []
+        }
+
+        for info in missing_info:
+            setting_type = info.setting_type.value
+            if setting_type in completion_tasks:
+                completion_tasks[setting_type].append(info.field_name)
+
+        prompts = self._internal.generate_completion_prompts(
+            settings, completion_tasks, count
+        )
+
+        # Return as instruction strings (for backward compat)
+        return [p.completion_instruction for p in prompts]
+
+
+class PriorityQuestionGenerator(QuestionGenerator):
+    """
+    DEPRECATED: Use InternalPromptGenerator instead.
+
+    This class is kept for backward compatibility.
+    """
+
+    def __init__(self, diversity_factor: float = 0.3):
+        """
+        Initialize (deprecated wrapper).
 
         Args:
-            settings: Current extracted settings
-            missing_info: List of missing information (should be pre-sorted by priority)
-            count: Maximum number of questions to generate (default: 3)
-
-        Returns:
-            List of follow-up questions (strings)
+            diversity_factor: Passed to InternalPromptGenerator
         """
-        if not missing_info:
-            # No missing info, return completion message
-            return ["All the essential information has been collected!"]
+        self._internal = InternalPromptGenerator(diversity_factor)
+
+    def generate_questions(self,
+                          settings: ExtractedSettings,
+                          missing_info: List[MissingInfo],
+                          count: int = 3) -> List[str]:
+        """Generate questions (deprecated - redirects to internal prompts)."""
+        # Convert to completion tasks
+        completion_tasks = {
+            "character": [],
+            "world": [],
+            "plot": [],
+            "style": []
+        }
+
+        for info in missing_info[:count]:
+            setting_type = info.setting_type.value
+            if setting_type in completion_tasks:
+                completion_tasks[setting_type].append(info.field_name)
+
+        prompts = self._internal.generate_completion_prompts(
+            settings, completion_tasks, count
+        )
+
+        return [p.completion_instruction for p in prompts]
 
         # Select which missing info to ask about
         selected = self._select_missing_info(missing_info, count)

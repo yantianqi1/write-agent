@@ -2,11 +2,15 @@
 Completeness checking for story settings.
 
 This module provides functionality to check if story settings are complete
-and identify missing information that should be collected from the user.
+and internally evaluate readiness for creation (IMPLICIT MODE).
+
+In implicit mode, missing information is auto-completed by AI rather than
+explicitly asking the user. The user should never see "missing info" prompts.
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Dict, Set, Tuple
+from typing import List, Dict, Set, Tuple, Optional
+from dataclasses import dataclass, field
 from .models import (
     ExtractedSettings, CharacterProfile, WorldSetting, PlotElement,
     StylePreference, SettingType, MissingInfo
@@ -35,12 +39,33 @@ class CompletenessChecker(ABC):
         pass
 
 
+@dataclass
+class ReadinessAssessment:
+    """Assessment of whether settings are ready for creation."""
+    is_ready: bool
+    readiness_score: float  # 0.0 to 1.0
+    missing_critical: List[str] = field(default_factory=list)
+    auto_completable: List[str] = field(default_factory=list)
+    recommended_action: str = ""
+    min_completeness_threshold: float = 0.3
+
+    def to_dict(self) -> Dict:
+        return {
+            "is_ready": self.is_ready,
+            "readiness_score": self.readiness_score,
+            "missing_critical": self.missing_critical,
+            "auto_completable": self.auto_completable,
+            "recommended_action": self.recommended_action
+        }
+
+
 class BasicCompletenessChecker(CompletenessChecker):
     """
     Basic completeness checker with predefined field requirements.
 
-    This checker defines required fields for each setting type with
-    priorities and generates follow-up questions for missing info.
+    IMPLICIT MODE: This checker now evaluates readiness for creation
+    internally. Missing information is tagged for auto-completion rather
+    than user prompting.
     """
 
     # Required fields for each setting type with metadata
@@ -82,15 +107,22 @@ class BasicCompletenessChecker(CompletenessChecker):
         "tense": (3, "Narrative tense", "What tense should the story be written in? (past, present)")
     }
 
-    def __init__(self, require_all_characters: bool = False):
+    def __init__(self, require_all_characters: bool = False,
+                 implicit_mode: bool = True,
+                 min_readiness: float = 0.3):
         """
         Initialize the basic completeness checker.
 
         Args:
             require_all_characters: If True, check completeness for ALL characters.
                                     If False, only check the first character (default).
+            implicit_mode: If True, operate in implicit mode (auto-complete missing
+                          info rather than prompting user). Default: True.
+            min_readiness: Minimum readiness score (0.0-1.0) to allow creation.
         """
         self.require_all_characters = require_all_characters
+        self.implicit_mode = implicit_mode
+        self.min_readiness = min_readiness
 
     def check_completeness(self, settings: ExtractedSettings) -> List[MissingInfo]:
         """
@@ -256,6 +288,104 @@ class BasicCompletenessChecker(CompletenessChecker):
 
         return False
 
+    def is_ready_for_creation(self, settings: ExtractedSettings) -> ReadinessAssessment:
+        """
+        Assess if settings are ready for story creation (IMPLICIT MODE).
+
+        In implicit mode, we don't require all fields to be filled.
+        We only need minimal information and can auto-complete the rest.
+
+        Minimal requirements:
+        - At least 1 character (can be unnamed, will be auto-named)
+        - Some indication of story context (world, plot, or from conversation)
+        - Style will use defaults if not specified
+
+        Args:
+            settings: Extracted settings to assess
+
+        Returns:
+            ReadinessAssessment with detailed evaluation
+        """
+        missing_critical = []
+        auto_completable = []
+
+        # Check characters
+        if not settings.characters:
+            # No characters at all - this is critical
+            missing_critical.append("characters")
+        else:
+            # Have characters - check what's missing (for auto-completion)
+            for char in settings.characters[:1]:  # Check first character
+                for field_name in self.CHARACTER_FIELDS.keys():
+                    if self._is_field_missing(getattr(char, field_name, None)):
+                        auto_completable.append(f"character.{field_name}")
+
+        # Check world
+        if not settings.world or settings.world.is_empty():
+            # No world info - can infer from other context
+            auto_completable.append("world")
+        else:
+            for field_name in self.WORLD_FIELDS.keys():
+                if settings.world and self._is_field_missing(getattr(settings.world, field_name, None)):
+                    auto_completable.append(f"world.{field_name}")
+
+        # Check plot
+        if not settings.plot or settings.plot.is_empty():
+            # No plot info - can generate default
+            auto_completable.append("plot")
+        else:
+            for field_name in self.PLOT_FIELDS.keys():
+                if settings.plot and self._is_field_missing(getattr(settings.plot, field_name, None)):
+                    auto_completable.append(f"plot.{field_name}")
+
+        # Check style (can always use defaults)
+        if not settings.style or settings.style.is_empty():
+            auto_completable.append("style")
+        else:
+            for field_name in self.STYLE_FIELDS.keys():
+                if settings.style and self._is_field_missing(getattr(settings.style, field_name, None)):
+                    auto_completable.append(f"style.{field_name}")
+
+        # Calculate readiness score
+        total_fields = (
+            len(self.CHARACTER_FIELDS) +
+            len(self.WORLD_FIELDS) +
+            len(self.PLOT_FIELDS) +
+            len(self.STYLE_FIELDS)
+        )
+        readiness_score = 1.0 - (len(auto_completable) + len(missing_critical)) / max(total_fields, 1)
+        readiness_score = max(0.0, min(1.0, readiness_score))
+
+        # Adjust score for having ANY information (bonus for implicit mode)
+        if len(settings.characters) > 0:
+            readiness_score += 0.2
+        if settings.world and not settings.world.is_empty():
+            readiness_score += 0.1
+        if settings.plot and not settings.plot.is_empty():
+            readiness_score += 0.1
+
+        readiness_score = min(1.0, readiness_score)
+
+        # Determine if ready
+        is_ready = readiness_score >= self.min_readiness and len(missing_critical) == 0
+
+        # Generate recommended action
+        if is_ready:
+            recommended_action = "proceed_with_auto_completion"
+        elif len(missing_critical) > 0:
+            recommended_action = f"need_critical_info: {', '.join(missing_critical)}"
+        else:
+            recommended_action = "gather_more_context"
+
+        return ReadinessAssessment(
+            is_ready=is_ready,
+            readiness_score=readiness_score,
+            missing_critical=missing_critical,
+            auto_completable=auto_completable,
+            recommended_action=recommended_action,
+            min_completeness_threshold=self.min_readiness
+        )
+
     def get_completeness_score(self, settings: ExtractedSettings) -> float:
         """
         Calculate a completeness score (0.0 to 1.0).
@@ -320,3 +450,72 @@ class BasicCompletenessChecker(CompletenessChecker):
             return False
 
         return True
+
+    def get_internal_completion_tasks(self, settings: ExtractedSettings) -> Dict[str, List[str]]:
+        """
+        Get list of completion tasks for AI (INTERNAL USE ONLY).
+
+        This returns what needs to be auto-completed rather than
+        what to ask the user. Used by AISettingCompleter.
+
+        Args:
+            settings: Current settings to analyze
+
+        Returns:
+            Dictionary mapping setting types to fields needing completion
+        """
+        tasks = {
+            "character": [],
+            "world": [],
+            "plot": [],
+            "style": []
+        }
+
+        # Check characters
+        for char in settings.characters[:1] if settings.characters else []:
+            for field_name in self.CHARACTER_FIELDS.keys():
+                if self._is_field_missing(getattr(char, field_name, None)):
+                    tasks["character"].append(field_name)
+
+        # If no characters, add as a task
+        if not settings.characters:
+            tasks["character"].append("create_default")
+
+        # Check world
+        if settings.world:
+            for field_name in self.WORLD_FIELDS.keys():
+                if self._is_field_missing(getattr(settings.world, field_name, None)):
+                    tasks["world"].append(field_name)
+        else:
+            tasks["world"].append("create_default")
+
+        # Check plot
+        if settings.plot:
+            for field_name in self.PLOT_FIELDS.keys():
+                if self._is_field_missing(getattr(settings.plot, field_name, None)):
+                    tasks["plot"].append(field_name)
+        else:
+            tasks["plot"].append("create_default")
+
+        # Check style
+        if settings.style:
+            for field_name in self.STYLE_FIELDS.keys():
+                if self._is_field_missing(getattr(settings.style, field_name, None)):
+                    tasks["style"].append(field_name)
+        else:
+            tasks["style"].append("use_defaults")
+
+        return tasks
+
+    def needs_auto_completion(self, settings: ExtractedSettings) -> bool:
+        """
+        Quick check if settings need auto-completion.
+
+        Args:
+            settings: Settings to check
+
+        Returns:
+            True if auto-completion is recommended
+        """
+        assessment = self.is_ready_for_creation(settings)
+        return len(assessment.auto_completable) > 0
