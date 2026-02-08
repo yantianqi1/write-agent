@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* Performance Optimizations */
 
+  // Standalone output for Docker deployment
+  output: 'standalone',
+
   // Enable SWC minification (faster than Terser)
   swcMinify: true,
 
