@@ -6,11 +6,11 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /frontend
 
-# 安装前端依赖
-COPY frontend/package*.json ./
-RUN npm ci
+# 只复制 package.json，生成新的 lock 文件
+COPY frontend/package.json ./
+RUN npm install --legacy-peer-deps
 
-# 复制前端源码并构建
+# 复制前端源码（排除已复制的 package.json）
 COPY frontend/ ./
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
