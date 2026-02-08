@@ -3,11 +3,11 @@ Unit tests for completeness checker.
 """
 
 import pytest
-from src.story.setting_extractor.completeness_checker import (
+from story.setting_extractor.completeness_checker import (
     CompletenessChecker,
     BasicCompletenessChecker
 )
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     ExtractedSettings,
     CharacterProfile,
     WorldSetting,

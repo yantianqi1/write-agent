@@ -5,11 +5,9 @@ Tests the ConsistencyChecker, CharacterTracker, WorldRuleChecker,
 and related consistency functionality.
 """
 
-import sys
 import unittest
-sys.path.insert(0, '/root/write-agent')
 
-from src.story.generation.consistency import (
+from story.generation.consistency import (
     ConsistencyLevel,
     ConsistencyIssue,
     ConsistencyReport,

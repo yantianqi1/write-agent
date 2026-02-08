@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Send, Square, Plus, Sparkles } from 'lucide-react';
+import { Send, Square, Plus, Sparkles, ChevronLeft } from 'lucide-react';
 
 /* ============================================================
    Chat Message Component
@@ -27,9 +28,19 @@ export interface ChatMessageProps {
   message: ChatMessage;
 }
 
-function ChatMessageComponent({ message }: ChatMessageProps) {
+/* 使用 React.memo 包装消息组件，避免不必要的重新渲染 */
+const ChatMessageComponent = memo(function ChatMessageComponentInner({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
+
+  // 使用 useMemo 缓存时间戳格式化结果
+  const timeString = useMemo(
+    () => message.timestamp.toLocaleTimeString('zh-CN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+    [message.timestamp]
+  );
 
   if (isSystem) {
     return (
@@ -51,7 +62,7 @@ function ChatMessageComponent({ message }: ChatMessageProps) {
       <div className="flex gap-3 max-w-[85%]">
         {/* Avatar */}
         {!isUser && (
-          <div className="shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center" aria-hidden="true">
             <Sparkles className="w-4 h-4 text-primary-foreground" />
           </div>
         )}
@@ -69,26 +80,31 @@ function ChatMessageComponent({ message }: ChatMessageProps) {
             {message.content}
           </p>
           <span className="text-[10px] opacity-60 mt-1 block">
-            {message.timestamp.toLocaleTimeString('zh-CN', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
+            {timeString}
           </span>
         </div>
       </div>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // 自定义比较函数：只有当消息ID和内容相同时才认为是相同的props
+  return (
+    prevProps.message.id === nextProps.message.id &&
+    prevProps.message.content === nextProps.message.content &&
+    prevProps.message.role === nextProps.message.role
+  );
+});
 
 /* ============================================================
    Typing Indicator
    ============================================================ */
 
-function TypingIndicator() {
+/* 使用 React.memo 包装输入指示器组件 */
+const TypingIndicator = memo(function TypingIndicatorInner() {
   return (
     <div className="flex w-full mb-4">
       <div className="flex gap-3">
-        <div className="shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+        <div className="shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center" aria-hidden="true">
           <Sparkles className="w-4 h-4 text-primary-foreground" />
         </div>
         <div className="px-4 py-3 rounded-2xl rounded-bl-sm bg-card border border-border/50">
@@ -101,7 +117,7 @@ function TypingIndicator() {
       </div>
     </div>
   );
-}
+});
 
 /* ============================================================
    Chat Workspace Component - Main
@@ -124,10 +140,16 @@ export function ChatWorkspace({
   onStopGeneration,
   isGenerating = false,
 }: ChatWorkspaceProps) {
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Sync messages from parent (store)
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, [initialMessages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -136,7 +158,8 @@ export function ChatWorkspace({
     }
   }, [messages]);
 
-  const handleSend = () => {
+  // 使用 useCallback 缓存事件处理函数
+  const handleSend = useCallback(() => {
     if (!input.trim()) return;
 
     const newMessage: ChatMessage = {
@@ -152,33 +175,61 @@ export function ChatWorkspace({
     if (onSendMessage) {
       onSendMessage(input.trim());
     }
-  };
+  }, [input, onSendMessage]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  };
+  }, [handleSend]);
 
-  // Suggested prompts
-  const suggestions = [
-    { icon: '📖', text: '续写下一章' },
-    { icon: '✨', text: '优化这段文字' },
-    { icon: '👤', text: '添加新角色' },
-    { icon: '🌍', text: '完善世界观' },
-  ];
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  }, []);
+
+  const handleClearInput = useCallback(() => {
+    setInput('');
+    inputRef.current?.focus();
+  }, []);
+
+  // 使用 useMemo 缓存建议选项
+  const suggestions = useMemo(
+    () => [
+      { icon: '📖', text: '续写下一章' },
+      { icon: '✨', text: '优化这段文字' },
+      { icon: '👤', text: '添加新角色' },
+      { icon: '🌍', text: '完善世界观' },
+    ],
+    []
+  );
+
+  // 使用 useMemo 缓存建议按钮点击处理
+  const handleSuggestionClick = useCallback((text: string) => {
+    setInput(text);
+    inputRef.current?.focus();
+  }, []);
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-[calc(100dvh-4rem)] bg-background">
       {/* Header */}
       <header className="shrink-0 glass border-b border-border/20 safe-top">
         <div className="flex items-center justify-between px-4 h-14">
-          <div>
-            <h1 className="text-base font-semibold text-foreground">{novelTitle}</h1>
-            <p className="text-xs text-muted-foreground">
-              {isGenerating ? '正在生成中...' : 'AI 创作助手'}
-            </p>
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            {/* Back Button */}
+            <button
+              onClick={() => router.push('/')}
+              className="flex items-center justify-center w-8 h-8 -ml-2 rounded-full touch-hover hover:bg-muted/50 transition-colors"
+              aria-label="返回"
+            >
+              <ChevronLeft className="w-5 h-5 text-foreground" />
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-base font-semibold text-foreground truncate">{novelTitle}</h1>
+              <p className="text-xs text-muted-foreground truncate">
+                {isGenerating ? '正在生成中...' : 'AI 创作助手'}
+              </p>
+            </div>
           </div>
           <Button size="sm" variant="ghost" className="shrink-0">
             <Plus className="w-4 h-4" />
@@ -208,14 +259,15 @@ export function ChatWorkspace({
               {suggestions.map((suggestion, index) => (
                 <button
                   key={index}
-                  onClick={() => setInput(suggestion.text)}
+                  onClick={() => handleSuggestionClick(suggestion.text)}
                   className={cn(
                     'flex flex-col items-center gap-2 p-4',
                     'rounded-2xl bg-card border border-border/50',
                     'touch-hover transition-all duration-150'
                   )}
+                  type="button"
                 >
-                  <span className="text-2xl">{suggestion.icon}</span>
+                  <span className="text-2xl" aria-hidden="true">{suggestion.icon}</span>
                   <span className="text-xs text-foreground">{suggestion.text}</span>
                 </button>
               ))}
@@ -232,7 +284,7 @@ export function ChatWorkspace({
       </div>
 
       {/* Input Area */}
-      <div className="shrink-0 glass border-t border-border/20 safe-bottom">
+      <div className="shrink-0 glass border-t border-border/20">
         <div className="p-4">
           {isGenerating ? (
             <Button
@@ -249,15 +301,18 @@ export function ChatWorkspace({
                 <Input
                   ref={inputRef}
                   value={input}
-                  onChange={e => setInput(e.target.value)}
+                  onChange={handleInputChange}
                   onKeyPress={handleKeyPress}
                   placeholder="输入你想说的..."
                   className="pr-12"
+                  aria-label="输入消息"
                 />
                 {input.length > 0 && (
                   <button
-                    onClick={() => setInput('')}
+                    onClick={handleClearInput}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    type="button"
+                    aria-label="清空输入"
                   >
                     <span className="text-xs">✕</span>
                   </button>

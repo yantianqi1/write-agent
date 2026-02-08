@@ -5,12 +5,10 @@ Tests the LLMContentGenerator, StoryGenerator, and
 related content generation functionality.
 """
 
-import sys
 import unittest
 import asyncio
-sys.path.insert(0, '/root/write-agent')
 
-from src.story.generation.content_generator import (
+from story.generation.content_generator import (
     GenerationRequest,
     GenerationResult,
     ContentGenerator,
@@ -20,17 +18,17 @@ from src.story.generation.content_generator import (
     create_content_generator,
     create_story_generator
 )
-from src.story.generation.prompt_templates import (
+from story.generation.prompt_templates import (
     GenerationContext,
     GenerationMode
 )
-from src.story.llm.base import (
+from story.llm.base import (
     MockLLMProvider,
     LLMRequest,
     Message,
     MessageRole
 )
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     ExtractedSettings,
     CharacterProfile,
     WorldSetting,

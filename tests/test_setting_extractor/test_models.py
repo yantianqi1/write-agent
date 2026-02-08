@@ -3,7 +3,7 @@ Unit tests for data models.
 """
 
 import pytest
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     UserIntent, SettingType, ConflictSeverity,
     CharacterProfile, WorldSetting, PlotElement, StylePreference,
     ExtractedSettings, MissingInfo, Conflict,

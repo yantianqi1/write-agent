@@ -6,8 +6,11 @@
 import sys
 import os
 
-# 添加 src 到路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+# conftest.py handles src path, but for direct execution we still need it
+if 'src' not in sys.modules:
+    src_path = os.path.join(os.path.dirname(__file__), '..', 'src')
+    if src_path not in sys.path:
+        sys.path.insert(0, src_path)
 
 from memory.base import MemoryLevel, MemoryItem
 from memory.hierarchical import HierarchicalMemory

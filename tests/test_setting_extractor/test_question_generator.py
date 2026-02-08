@@ -3,11 +3,11 @@ Unit tests for question generator.
 """
 
 import pytest
-from src.story.setting_extractor.question_generator import (
+from story.setting_extractor.question_generator import (
     QuestionGenerator,
     PriorityQuestionGenerator
 )
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     ExtractedSettings,
     MissingInfo,
     SettingType

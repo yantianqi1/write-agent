@@ -3,11 +3,11 @@ Unit tests for conflict detector.
 """
 
 import pytest
-from src.story.setting_extractor.conflict_detector import (
+from story.setting_extractor.conflict_detector import (
     ConflictDetector,
     BasicConflictDetector
 )
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     ExtractedSettings,
     CharacterProfile,
     WorldSetting,

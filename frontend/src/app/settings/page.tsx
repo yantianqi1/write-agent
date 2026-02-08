@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Moon, Sun, Bell, Lock, Info, LogOut, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 type SettingItemType = 'toggle' | 'chevron';
@@ -19,6 +20,7 @@ interface SettingItem {
 }
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [darkMode, setDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
@@ -87,7 +89,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <Header title="设置" />
+      <Header title="设置" showBack onBack={() => router.push('/')} />
 
       <div className="p-4 space-y-6">
         {/* Profile Card */}

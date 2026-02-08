@@ -1,48 +1,62 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { BottomTabBar, FloatingActionButton, Header } from '@/components/layout/bottom-tab-bar';
 import { NovelCard, NovelGrid } from '@/components/novel/novel-card';
 import { Input } from '@/components/ui/input';
+import { GridSkeleton, StatsSkeleton } from '@/components/ui/skeleton';
 import { Search, BookOpen, Clock, TrendingUp, Loader2 } from 'lucide-react';
 import { api, type ProjectInfo } from '@/lib/api';
 import { cn, formatWordCount } from '@/lib/utils';
+import { useDebounce } from '@/lib/hooks';
 import type { Novel } from '@/lib/types';
+import { useProjectStore } from '@/store';
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'draft' | 'in_progress' | 'completed'>('all');
-  const [projects, setProjects] = useState<ProjectInfo[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
+  // 使用 Zustand store
+  const { projects, isLoading, fetchProjects, error, clearError } = useProjectStore();
 
   // 加载项目列表
+  const loadProjects = async () => {
+    try {
+      // 使用 store 的 fetchProjects 方法（移除了重复的 API 调用）
+      await fetchProjects();
+      setIsConnected(true);
+    } catch (err) {
+      console.error('[HomePage] Error:', err);
+      setIsConnected(false);
+    }
+  };
+
   useEffect(() => {
     loadProjects();
   }, []);
 
-  async function loadProjects() {
-    try {
-      setIsLoading(true);
-      const data = await api.projects.listProjects();
-      setProjects(data);
-      setIsConnected(true);
-    } catch (error) {
-      console.error('Failed to load projects:', error);
-      setIsConnected(false);
-      // 使用mock数据作为fallback
-      setProjects([]);
-    } finally {
-      setIsLoading(false);
+  // 清除错误
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        clearError();
+      }, 5000);
+      return () => clearTimeout(timer);
     }
-  }
+  }, [error, clearError]);
 
-  // 过滤项目
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || project.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  // 使用防抖处理搜索输入（300ms 延迟）
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // 过滤项目 - 使用防抖后的搜索查询
+  const filteredProjects = useMemo(() => {
+    return projects.filter(project => {
+      const matchesSearch = project.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
+      const matchesFilter = filterStatus === 'all' || project.status === filterStatus;
+      return matchesSearch && matchesFilter;
+    });
+  }, [projects, debouncedSearchQuery, filterStatus]);
 
   // 转换为Novel类型
   const novels: Novel[] = filteredProjects.map(project => ({
@@ -85,8 +99,11 @@ export default function HomePage() {
 
       {/* Quick Stats */}
       <div className="px-4 py-3">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-          <button
+        {isLoading ? (
+          <StatsSkeleton />
+        ) : (
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            <button
             onClick={() => setFilterStatus('all')}
             className={cn(
               'shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors',
@@ -119,17 +136,15 @@ export default function HomePage() {
           >
             已完结 {stats.completed}
           </button>
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Novel Grid */}
       <div className="px-4">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-muted-foreground animate-spin mb-4" />
-            <p className="text-sm text-muted-foreground">加载中...</p>
-          </div>
-        ) : !isConnected ? (
+          <GridSkeleton columns={2} count={4} />
+        ) : isConnected === false ? (
           <div className="flex flex-col items-center justify-center py-20 text-center px-8">
             <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
               <span className="text-3xl">⚠️</span>

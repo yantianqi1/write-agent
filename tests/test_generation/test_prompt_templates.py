@@ -5,11 +5,9 @@ Tests the StoryTemplateEngine, CompactTemplateEngine, and
 related prompt generation functionality.
 """
 
-import sys
 import unittest
-sys.path.insert(0, '/root/write-agent')
 
-from src.story.generation.prompt_templates import (
+from story.generation.prompt_templates import (
     GenerationMode,
     ContentType,
     GenerationContext,
@@ -19,7 +17,7 @@ from src.story.generation.prompt_templates import (
     CompactTemplateEngine,
     create_template_engine
 )
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     ExtractedSettings,
     CharacterProfile,
     WorldSetting,

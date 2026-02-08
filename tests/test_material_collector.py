@@ -4,7 +4,7 @@
 
 import pytest
 from datetime import datetime, timedelta
-from src.story.material_collector import (
+from story.material_collector import (
     Material,
     MaterialSource,
     MaterialCategory,
@@ -14,10 +14,10 @@ from src.story.material_collector import (
     CollectionResult,
     CompositeMaterialCollector,
 )
-from src.story.local_knowledge_collector import LocalKnowledgeCollector
-from src.story.web_search_collector import WebSearchCollector, MockWebSearchCollector
-from src.memory.base import MemoryLevel, MemoryItem
-from src.memory.hierarchical import HierarchicalMemory
+from story.local_knowledge_collector import LocalKnowledgeCollector
+from story.web_search_collector import WebSearchCollector, MockWebSearchCollector
+from memory.base import MemoryLevel, MemoryItem
+from memory.hierarchical import HierarchicalMemory
 from src.memory.vector import MockVectorStore
 
 

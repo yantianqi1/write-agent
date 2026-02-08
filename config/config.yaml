@@ -12,6 +12,28 @@ api:
   port: 8000
   reload: true
 
+# 数据库配置
+database:
+  type: sqlite
+  path: "./data/writeagent.db"
+  pool_size: 5
+  max_overflow: 10
+  echo: false  # SQL日志，开发时设为true
+
+# 缓存配置
+cache:
+  enabled: true
+  ttl: 1800  # 30分钟
+  max_size: 100
+  backend: "redis"  # "memory" 或 "redis" - 生产环境推荐使用 redis
+  redis:
+    url: "redis://localhost:6379/0"  # 从环境变量 REDIS_URL 读取
+    password: null
+    db: 0
+    max_connections: 50
+    socket_timeout: 5
+    retry_on_timeout: true
+
 # 记忆系统配置
 memory:
   storage_path: "./data/memory"

@@ -5,15 +5,13 @@ Tests the ContentManager, FileContentStorage, and
 related content management functionality.
 """
 
-import sys
 import unittest
 import tempfile
 import shutil
 import os
 from datetime import datetime
-sys.path.insert(0, '/root/write-agent')
 
-from src.story.generation.content_manager import (
+from story.generation.content_manager import (
     StorageBackend,
     ContentVersion,
     StoryProject,
@@ -24,9 +22,9 @@ from src.story.generation.content_manager import (
     create_content_manager,
     create_file_manager
 )
-from src.story.generation.content_generator import ChapterContent
-from src.story.generation.consistency import create_consistency_checker
-from src.story.setting_extractor.models import ExtractedSettings
+from story.generation.content_generator import ChapterContent
+from story.generation.consistency import create_consistency_checker
+from story.setting_extractor.models import ExtractedSettings
 
 
 class TestContentVersion(unittest.TestCase):

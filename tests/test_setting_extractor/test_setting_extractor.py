@@ -3,11 +3,11 @@ Unit tests for setting extractor.
 """
 
 import pytest
-from src.story.setting_extractor.setting_extractor import (
+from story.setting_extractor.setting_extractor import (
     SettingExtractor,
     RuleBasedExtractor
 )
-from src.story.setting_extractor.models import (
+from story.setting_extractor.models import (
     ExtractionRequest,
     ExtractedSettings,
     CharacterProfile,

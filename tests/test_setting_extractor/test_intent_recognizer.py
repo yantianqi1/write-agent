@@ -3,11 +3,11 @@ Unit tests for intent recognizer.
 """
 
 import pytest
-from src.story.setting_extractor.intent_recognizer import (
+from story.setting_extractor.intent_recognizer import (
     IntentRecognizer,
     KeywordIntentRecognizer
 )
-from src.story.setting_extractor.models import UserIntent, SettingType
+from story.setting_extractor.models import UserIntent, SettingType
 
 
 class TestKeywordIntentRecognizer:
