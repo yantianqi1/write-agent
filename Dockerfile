@@ -4,16 +4,14 @@
 # ==================== Stage 1: 构建前端 ====================
 FROM node:20-alpine AS frontend-builder
 
-WORKDIR /frontend
+WORKDIR /app
 
-# 只复制 package.json，生成新的 lock 文件
-COPY frontend/package.json ./
-RUN npm install --legacy-peer-deps
+# 复制整个前端目录
+COPY frontend/ .
 
-# 复制前端源码（排除已复制的 package.json）
-COPY frontend/ ./
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+# 安装依赖并构建
+RUN npm install --legacy-peer-deps && \
+    npm run build
 
 # ==================== Stage 2: 准备后端 ====================
 FROM python:3.11-slim AS backend
@@ -43,9 +41,9 @@ RUN mkdir -p /app/data /var/log/supervisor /run/nginx
 FROM backend
 
 # 从前端构建阶段复制构建产物
-COPY --from=frontend-builder /frontend/.next/standalone /app/frontend/
-COPY --from=frontend-builder /frontend/public /app/frontend/public/
-COPY --from=frontend-builder /frontend/.next/static /app/frontend/.next/static/
+COPY --from=frontend-builder /app/.next/standalone /app/frontend/
+COPY --from=frontend-builder /app/public /app/frontend/public/
+COPY --from=frontend-builder /app/.next/static /app/frontend/.next/static/
 
 # 复制 Nginx 配置
 COPY docker/nginx.conf /etc/nginx/nginx.conf
