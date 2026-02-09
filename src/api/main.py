@@ -6,9 +6,33 @@ FastAPI应用主文件
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
+import os
 
 # 加载环境变量（在导入其他模块之前）
 load_dotenv()
+
+# Sentry 错误追踪
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+if SENTRY_DSN:
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        from sentry_sdk.integrations.httpx import HttpxIntegration
+
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            integrations=[
+                FastApiIntegration(),
+                HttpxIntegration(),
+            ],
+            traces_sample_rate=0.1,  # 10% of transactions sampled
+            environment=os.getenv("ENVIRONMENT", "development"),
+        )
+        print("✓ Sentry error tracking initialized")
+    except ImportError:
+        print("⚠ Sentry DSN configured but sentry-sdk not installed. Install with: pip install sentry-sdk[fastapi]")
+    except Exception as e:
+        print(f"⚠ Failed to initialize Sentry: {e}")
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -19,8 +43,10 @@ from .routers import (
     chat_router,
     projects_router,
     generation_router,
+    auth_router,
 )
 from .routers import chat_stream_router
+from .analytics import router as analytics_router
 from .database import init_db, close_db
 from .middleware import add_timing_middleware
 from .middleware.monitoring import MonitoringMiddleware, start_background_sampler
@@ -77,6 +103,10 @@ app.add_middleware(MonitoringMiddleware)
 
 # 注册路由
 app.include_router(health_router)
+# 认证路由（排除在全局认证之外）
+app.include_router(auth_router)
+# 分析路由（排除在全局认证之外，用于匿名跟踪）
+app.include_router(analytics_router)
 app.include_router(chat_router)
 app.include_router(chat_stream_router)  # 添加流式聊天路由
 app.include_router(projects_router)

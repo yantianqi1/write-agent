@@ -38,7 +38,7 @@ cache:
 memory:
   storage_path: "./data/memory"
   vector_db:
-    enabled: false  # 待启用 Chroma
+    enabled: true  # 启用 Chroma 向量数据库
     type: "chroma"
     path: "./data/vector_db"
     embedding_model: "sentence-transformers/all-MiniLM-L6-v2"

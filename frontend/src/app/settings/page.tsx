@@ -3,10 +3,11 @@
 import { BottomTabBar, Header } from '@/components/layout/bottom-tab-bar';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Moon, Sun, Bell, Lock, Info, LogOut, type LucideIcon } from 'lucide-react';
+import { Moon, Sun, Bell, Lock, Info, LogOut, Languages, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useI18n, locales, type Locale } from '@/lib/i18n';
 
 type SettingItemType = 'toggle' | 'chevron';
 
@@ -21,7 +22,9 @@ interface SettingItem {
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { locale, setLocale, t } = useI18n();
   const [darkMode, setDarkMode] = useState(false);
+  const [isChangingLocale, setIsChangingLocale] = useState(false);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -30,7 +33,25 @@ export default function SettingsPage() {
 
   const settingsSections: { title: string; items: SettingItem[] }[] = [
     {
-      title: '外观',
+      title: t.settings?.language || '语言',
+      items: [
+        {
+          icon: Languages,
+          label: t.settings?.language || '语言',
+          value: locales.find(l => l.code === locale)?.nativeName || '简体中文',
+          action: async () => {
+            setIsChangingLocale(true);
+            const currentIndex = locales.findIndex(l => l.code === locale);
+            const nextIndex = (currentIndex + 1) % locales.length;
+            await setLocale(locales[nextIndex].code);
+            setIsChangingLocale(false);
+          },
+          type: 'chevron',
+        },
+      ],
+    },
+    {
+      title: t.settings?.theme || '外观',
       items: [
         {
           icon: darkMode ? Sun : Moon,
@@ -89,7 +110,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <Header title="设置" showBack onBack={() => router.push('/')} />
+      <Header title={t.settings?.title || '设置'} showBack onBack={() => router.push('/')} />
 
       <div className="p-4 space-y-6">
         {/* Profile Card */}
@@ -158,9 +179,17 @@ export default function SettingsPage() {
         ))}
 
         {/* Logout Button */}
-        <Button variant="ghost" className="w-full justify-start gap-3 h-14 px-4 rounded-2xl">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-3 h-14 px-4 rounded-2xl"
+          onClick={() => {
+            localStorage.removeItem('writeagent_jwt_token');
+            localStorage.removeItem('writeagent_user_info');
+            router.push('/login');
+          }}
+        >
           <LogOut className="w-5 h-5 text-destructive" />
-          <span className="text-destructive">退出登录</span>
+          <span className="text-destructive">{t.auth?.logout || '退出登录'}</span>
         </Button>
 
         {/* Version Info */}

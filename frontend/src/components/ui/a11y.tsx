@@ -503,7 +503,7 @@ export interface FocusableItemProps extends React.HTMLAttributes<HTMLDivElement>
  * 自动添加必要的可访问性属性
  */
 export function FocusableItem({ children, focused, index, className, ...props }: FocusableItemProps) {
-  const child = Children.only(children) as React.ReactElement;
+  const child = Children.only(children) as React.ReactElement<any>;
 
   return cloneElement(child, {
     ...props,

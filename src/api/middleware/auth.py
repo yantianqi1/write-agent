@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from functools import wraps
 import logging
+import os
+import secrets
 
 from fastapi import Request, HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -19,10 +21,18 @@ from starlette.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
 
-# JWT配置
-JWT_SECRET_KEY = "write-agent-secret-key-change-in-production"  # 应从环境变量读取
-JWT_ALGORITHM = "HS256"
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7天
+# JWT配置 - 从环境变量读取
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
+if not JWT_SECRET_KEY:
+    # 生成默认密钥并发出警告（仅用于开发环境）
+    JWT_SECRET_KEY = secrets.token_urlsafe(32)
+    logger.warning(
+        "JWT_SECRET_KEY not set in environment variables! "
+        "Using auto-generated key. Tokens will be invalid on restart. "
+        "Please set JWT_SECRET_KEY in your .env file for production."
+    )
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", str(60 * 24 * 7)))  # 默认7天
 
 
 class TokenPayload:
@@ -224,6 +234,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/redoc",
             "/openapi.json",
             "/api/health",
+            "/api/v1/auth/login",     # 登录端点
+            "/api/v1/auth/refresh",   # 刷新令牌端点
+            "/api/v1/auth/verify",    # 验证令牌端点
+            "/api/v1/analytics",      # 分析端点（允许匿名访问）
         ])
 
     async def dispatch(self, request: Request, call_next):

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ToastProvider } from "@/components/ui/toast";
+import { I18nProvider } from "@/lib/i18n";
+import { AnalyticsProvider } from "@/lib/analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,19 +54,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ErrorBoundary
-          onError={(error, errorInfo) => {
-            // 开发环境下打印详细错误信息
-            if (process.env.NODE_ENV === 'development') {
-              console.error('Global ErrorBoundary:', error, errorInfo);
-            }
-            // 生产环境可以上报错误到监控服务
-            // logErrorToService(error, errorInfo);
-          }}
-        >
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+        <ErrorBoundary>
+          <AnalyticsProvider>
+            <I18nProvider>
+              <ToastProvider>
+                {children}
+              </ToastProvider>
+            </I18nProvider>
+          </AnalyticsProvider>
         </ErrorBoundary>
       </body>
     </html>

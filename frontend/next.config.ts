@@ -6,9 +6,6 @@ const nextConfig: NextConfig = {
   // Standalone output for Docker deployment
   output: 'standalone',
 
-  // Enable SWC minification (faster than Terser)
-  swcMinify: true,
-
   // Enable React strict mode for better development experience
   reactStrictMode: true,
 
@@ -40,25 +37,10 @@ const nextConfig: NextConfig = {
 
     // Enable scroll restoration
     scrollRestoration: true,
-
-    // Enable turbo for faster builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
   },
 
-  // Bundle optimization
-  modularizeImports: {
-    'lucide-react': {
-      transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
-      skipDefaultConversion: true,
-    },
-  },
+  // Turbopack config (Next.js 16+)
+  turbopack: {},
 
   // Webpack configuration for better bundle splitting
   webpack: (config, { dev, isServer }) => {

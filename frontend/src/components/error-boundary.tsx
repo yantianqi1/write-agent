@@ -8,7 +8,10 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertCircle, RefreshCw, Home } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+
+// Extract icons to avoid Turbopack import issues
+const { CircleAlert, RotateCw, Home } = LucideIcons as any;
 
 interface Props {
   children: ReactNode;
@@ -81,7 +84,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="text-center">
               {/* 错误图标 */}
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 mb-6">
-                <AlertCircle className="w-8 h-8 text-destructive" />
+                <CircleAlert className="w-8 h-8 text-destructive" />
               </div>
 
               {/* 错误标题 */}
@@ -111,7 +114,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   onClick={this.handleReset}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <RotateCw className="w-4 h-4" />
                   重试
                 </button>
                 <button

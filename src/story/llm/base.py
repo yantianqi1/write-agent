@@ -282,16 +282,32 @@ def create_llm_provider(config: LLMConfig = None) -> LLMProvider:
 
     # Use env vars if config not provided
     if config is None:
-        # Auto-detect provider from env vars
+        # Auto-detect provider from env vars (priority order)
         if os.getenv("ANTHROPIC_API_KEY"):
             provider = "anthropic"
             api_key = os.getenv("ANTHROPIC_API_KEY")
             model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+            base_url = None
+        elif os.getenv("AZURE_OPENAI_API_KEY") and os.getenv("AZURE_OPENAI_ENDPOINT"):
+            provider = "azure-openai"
+            api_key = os.getenv("AZURE_OPENAI_API_KEY")
+            model = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4")
+            base_url = os.getenv("AZURE_OPENAI_ENDPOINT")
+        elif os.getenv("GEMINI_API_KEY"):
+            provider = "gemini"
+            api_key = os.getenv("GEMINI_API_KEY")
+            model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
+            base_url = None
+        elif os.getenv("OLLAMA_BASE_URL") or provider == "ollama":
+            provider = "ollama"
+            api_key = None
+            model = os.getenv("OLLAMA_MODEL", "llama3.2")
+            base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         else:
             provider = "openai"
             api_key = os.getenv("OPENAI_API_KEY")
             model = os.getenv("OPENAI_MODEL", "gpt-4")
-        base_url = os.getenv("OPENAI_BASE_URL")
+            base_url = os.getenv("OPENAI_BASE_URL")
 
         config = LLMConfig(
             provider=provider,
@@ -320,6 +336,32 @@ def create_llm_provider(config: LLMConfig = None) -> LLMProvider:
             timeout=config.timeout,
             max_retries=config.max_retries,
             base_url=config.base_url
+        )
+    elif provider_type in ("azure", "azure-openai", "azureopenai"):
+        from .azure_openai_provider import AzureOpenAILLMProvider
+        return AzureOpenAILLMProvider(
+            api_key=config.api_key,
+            endpoint=config.base_url or os.getenv("AZURE_OPENAI_ENDPOINT"),
+            deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT", config.model),
+            model=config.model,
+            timeout=config.timeout,
+            max_retries=config.max_retries
+        )
+    elif provider_type == "gemini":
+        from .gemini_provider import GeminiLLMProvider
+        return GeminiLLMProvider(
+            api_key=config.api_key,
+            model=config.model,
+            timeout=config.timeout,
+            max_retries=config.max_retries
+        )
+    elif provider_type == "ollama":
+        from .ollama_provider import OllamaLLMProvider
+        return OllamaLLMProvider(
+            model=config.model,
+            base_url=config.base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+            timeout=config.timeout,
+            max_retries=config.max_retries
         )
     else:
         raise ValueError(f"Unknown LLM provider: {config.provider}")

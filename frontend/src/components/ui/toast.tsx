@@ -7,8 +7,11 @@
  */
 
 import React, { createContext, useContext, useCallback, useState, useEffect, ReactNode } from 'react';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// Extract icons to avoid Turbopack import issues
+const { X, CircleCheck, CircleAlert, Info, AlertTriangle } = LucideIcons as any;
 
 /* ============================================================
    类型定义
@@ -120,7 +123,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         label: '重试',
         onClick: () => {
           onRetry();
-          remove(toasts[t.length - 1]?.id || '');
+          remove(toasts[toasts.length - 1]?.id || '');
         },
       } : undefined,
     });
@@ -179,8 +182,8 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
   }, [toast.id, toast.duration, isPaused, onRemove]);
 
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-green-500" />,
-    error: <AlertCircle className="w-5 h-5 text-destructive" />,
+    success: <CircleCheck className="w-5 h-5 text-green-500" />,
+    error: <CircleAlert className="w-5 h-5 text-destructive" />,
     info: <Info className="w-5 h-5 text-blue-500" />,
     warning: <AlertTriangle className="w-5 h-5 text-amber-500" />,
   };

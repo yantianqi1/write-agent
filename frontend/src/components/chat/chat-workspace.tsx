@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Send, Square, Plus, Sparkles, ChevronLeft } from 'lucide-react';
+import { SmartMessageList } from './virtual-message-list';
 
 /* ============================================================
    Chat Message Component
@@ -238,11 +239,8 @@ export function ChatWorkspace({
       </header>
 
       {/* Messages Area */}
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4 py-4 scrollbar-ios"
-      >
-        {messages.length === 0 ? (
+      {messages.length === 0 ? (
+        <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-ios">
           <div className="flex flex-col items-center justify-center h-full text-center px-8">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4">
               <Sparkles className="w-8 h-8 text-primary" />
@@ -273,15 +271,15 @@ export function ChatWorkspace({
               ))}
             </div>
           </div>
-        ) : (
-          <>
-            {messages.map(message => (
-              <ChatMessageComponent key={message.id} message={message} />
-            ))}
-            {isGenerating && <TypingIndicator />}
-          </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <SmartMessageList
+          messages={messages}
+          isGenerating={isGenerating}
+          className="px-4 py-4"
+          virtualThreshold={50}
+        />
+      )}
 
       {/* Input Area */}
       <div className="shrink-0 glass border-t border-border/20">

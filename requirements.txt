@@ -38,3 +38,6 @@ faker>=20.0.0
 
 # 系统监控
 psutil>=5.9.0
+
+# 错误追踪
+sentry-sdk[fastapi]>=1.40.0

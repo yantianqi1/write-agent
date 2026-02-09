@@ -119,44 +119,19 @@
 **完成度：** 100%
 **完成日期：** 2026-02-06
 
-### 阶段 4：用户交互界面 ✅ 已完成 (100%) ✨ 新增
+### 阶段 4：用户交互界面 ✅ 已完成 (100%)
 - [x] iOS/macOS 风格设计系统
 - [x] 移动端优先响应式布局
 - [x] UI 组件库
-  - [x] Button 按钮
-  - [x] Card 卡片
-  - [x] Input 输入框
-  - [x] Avatar 头像
-  - [x] Badge 徽章
-  - [x] Progress 进度条
-- [x] 布局组件
-  - [x] BottomTabBar 底部导航
-  - [x] Header 顶部标题栏
-  - [x] FloatingActionButton 浮动按钮
-- [x] 业务组件
-  - [x] NovelCard 小说卡片
-  - [x] ReadingView 阅读视图
-  - [x] ChatWorkspace 聊天工作区
-- [x] 页面
-  - [x] 首页（书架）
-  - [x] 聊天页（AI 创作助手）
-  - [x] 阅读页（小说阅读）
-  - [x] 设置页
+- [x] 页面（首页、聊天页、阅读页、设置页）
 
 **完成度：** 100%
 **完成日期：** 2026-02-06
 
-### 阶段 5：后端 API 服务 ✅ 已完成 (100%) ✨ 新增
+### 阶段 5：后端 API 服务 ✅ 已完成 (100%)
 - [x] FastAPI 应用入口
 - [x] Pydantic 数据模型
-  - [x] Chat 聊天模型
-  - [x] Project 项目模型
-  - [x] Generation 生成模型
-- [x] API 路由
-  - [x] 健康检查
-  - [x] 聊天 API（会话管理、消息处理）
-  - [x] 项目管理 API（CRUD、章节管理）
-  - [x] 内容生成 API（章节生成、状态查询）
+- [x] API 路由（健康检查、聊天、项目管理、内容生成）
 - [x] CORS 配置
 - [x] Swagger API 文档
 - [x] 错误处理
@@ -164,7 +139,7 @@
 **完成度：** 100%
 **完成日期：** 2026-02-06
 
-### 阶段 6：前后端联通 ✅ 已完成 (100%) ✨ 新增
+### 阶段 6：前后端联通 ✅ 已完成 (100%)
 - [x] 前端 API 客户端封装
 - [x] 首页接入真实 API（项目列表）
 - [x] 聊天页接入真实 API（消息收发）
@@ -174,7 +149,7 @@
 **完成度：** 100%
 **完成日期：** 2026-02-06
 
-### 阶段 7：集成与优化 ✅ 已完成 (100%) ✨ 新增
+### 阶段 7：集成与优化 ✅ 已完成 (100%)
 - [x] 数据库 ORM 模型
 - [x] CRUD 操作封装
 - [x] 数据库会话管理
@@ -183,107 +158,85 @@
 - [x] 前端 Store 优化（离线检测、乐观更新）
 - [x] 端到端测试框架
 - [x] 性能监控中间件
-- [x] 修复 API 路由异步问题
 
 **完成度：** 100%
 **完成日期：** 2026-02-06
 
-### 阶段 8：性能与用户体验优化 ✅ 已完成 (100%) ✨ 新增
-- [x] **紧急性能修复**
-  - [x] LLM 异步调用（解决事件循环阻塞）
-  - [x] 修复前端重复 API 调用
-  - [x] 搜索输入防抖（300ms）
-- [x] **流式响应实现**
-  - [x] SSE 流式聊天端点 (`/api/v1/chat/stream/`)
-  - [x] 前端 SSE 客户端库
-  - [x] 流式聊天 Hook (`useStreamingChat`)
-  - [x] 流式进度 UI 组件
-- [x] **前端性能优化**
-  - [x] Next.js 构建优化（SWC minify、压缩、bundle splitting）
-  - [x] 骨架屏组件（CardSkeleton、ChatSkeleton、GridSkeleton）
-  - [x] useMemo/useCallback 优化
-- [x] **后端架构升级**
-  - [x] Redis 缓存实现（支持异步）
-  - [x] 会话历史 LRU 限制（防止内存泄漏）
-  - [x] 连接池优化
-- [x] **Docker 部署方案**
-  - [x] docker-compose.yml（API、前端、PostgreSQL、Redis、Nginx）
-  - [x] 后端 Dockerfile
-  - [x] 前端 Dockerfile
-  - [x] Nginx 反向代理配置
+### 阶段 8：性能与用户体验优化 ✅ 已完成 (100%)
+- [x] LLM 异步调用（解决事件循环阻塞）
+- [x] 修复前端重复 API 调用
+- [x] 搜索输入防抖（300ms）
+- [x] SSE 流式响应实现
+- [x] 前端性能优化（Next.js 构建、骨架屏）
+- [x] 后端架构升级（Redis 缓存、连接池优化）
+- [x] Docker 部署方案
 
 **完成度：** 100%
 **完成日期：** 2026-02-06
 
-### 阶段 9：安全加固与性能深度优化 ✅ 已完成 (100%) ✨ 新增
-- [x] **JWT 认证中间件** (`src/api/middleware/auth.py`)
-  - [x] `create_access_token()` - 创建JWT令牌
-  - [x] `decode_token()` - 验证令牌
-  - [x] `AuthMiddleware` - 认证中间件
-  - [x] `get_current_user()` / `require_auth()` - 依赖注入
-- [x] **速率限制中间件** (`src/api/middleware/rate_limit.py`)
-  - [x] `RateLimiter` - 滑动窗口算法
-  - [x] `RateLimitMiddleware` - 全局限流（60/30/10 请求/分钟）
-  - [x] 令牌桶算法实现
-- [x] **输入验证与XSS防护** (`src/api/middleware/validation.py`)
-  - [x] `InputValidator` - 字符串清理、XSS/SQL注入检测
-  - [x] `ValidationMiddleware` - 请求体验证
-  - [x] `SecurityHeadersMiddleware` - 安全HTTP头
-  - [x] `ContentLengthMiddleware` - 内容长度限制
-- [x] **数据库查询优化** (`src/api/database/crud.py`)
-  - [x] 合并 `update_project_word_count` 为单次查询
-  - [x] `get_project_with_chapters` 使用 selectinload
-  - [x] `get_sessions_with_message_counts` 单次查询获取
-- [x] **连接池配置优化**
-  - [x] PostgreSQL: pool_size=20, max_overflow=40
-  - [x] SQLite: NullPool 配置
-- [x] **LLM 超时重试机制** (`src/api/llm/llm_with_retry.py`)
-  - [x] `with_async_llm_retry` - 异步重试装饰器
-  - [x] `LLMTimeoutError`, `LLMRateLimitError` 等异常类
-  - [x] `LLMRetryTracker` - 重试统计跟踪
-- [x] **缓存自动清理** (`src/api/cache/__init__.py`)
-  - [x] `start_cleanup_task()` / `stop_cleanup_task()`
-  - [x] 启动/关闭事件中管理清理任务
-- [x] **前端 React.memo 优化** (`chat-workspace.tsx`)
-  - [x] 消息组件用 memo 包装
-  - [x] useMemo 缓存计算值
-  - [x] useCallback 缓存事件处理
-- [x] **请求去重** (`frontend/src/lib/api-dedup.ts`)
-  - [x] `RequestDedupManager` - 去重管理器
-  - [x] `dedupedFetch()` - 带去重的请求封装
-  - [x] `useRequestDedup()` - React Hook
-- [x] **请求取消** (`frontend/src/lib/api-cancel.ts`)
-  - [x] `RequestCancelManager` - 取消管理器
-  - [x] `useRequestCancel()` - 自动取消组件请求
-  - [x] `useCancellableFetch()` - 可取消的fetch
-- [x] **代码分割** (`frontend/next.config.ts`)
-  - [x] 优化 webpack splitChunks 配置
-  - [x] 分离 framework、lib、vendor、common chunk
-- [x] **加载状态优化** (`frontend/src/components/ui/skeleton.tsx`)
-  - [x] `AdaptiveSkeleton` - 根据内容类型自动调整
-  - [x] `DelayedSkeleton` - 延迟显示避免闪烁
-  - [x] `StreamingTextSkeleton` - 流式文本加载效果
-- [x] **错误处理改进** (`frontend/src/lib/errors.ts`)
-  - [x] `AppError`, `NetworkError`, `RateLimitError` 等错误类
-  - [x] `parseAPIError()` - 解析API错误
-  - [x] `getRecoverySuggestion()` - 获取恢复建议
-  - [x] `useErrorHandler()` - React Hook
-  - [x] Toast 组件支持重试按钮
-- [x] **可访问性增强** (`frontend/src/components/ui/a11y.tsx`)
-  - [x] `LiveRegion` - 屏幕阅读器通知
-  - [x] `FocusTrap` - 焦点陷阱
-  - [x] `SkipLink` - 跳过导航链接
-  - [x] `useKeyboardNavigation()` - 键盘导航Hook
-  - [x] `useFocusReset()` - 焦点重置Hook
-- [x] **响应式设计优化** (`frontend/src/styles/responsive.css`)
-  - [x] `.scrollbar-hide`, `.scrollbar-ios`
-  - [x] `.safe-top/bottom/left/right` - 安全区域
-  - [x] `.touch-hover`, `.touch-target` - 触摸优化
-  - [x] 响应式显示/隐藏类
-  - [x] 暗色模式、减少动画等用户偏好支持
+### 阶段 9：安全加固与性能深度优化 ✅ 已完成 (100%)
+- [x] JWT 认证中间件
+- [x] 速率限制中间件
+- [x] 输入验证与 XSS 防护
+- [x] 数据库查询优化
+- [x] LLM 超时重试机制
+- [x] 前端 React.memo 优化
+- [x] 请求去重/取消
+- [x] 错误处理改进
+- [x] 可访问性增强
 
 **完成度：** 100%
 **完成日期：** 2026-02-06
+
+### 阶段 10：后续开发计划 ✅ 已完成 (100%)
+- [x] 关键问题修复
+- [x] 测试基础设施
+- [x] 前端完善
+- [x] 生产环境加固
+- [x] 文档与部署
+
+**完成度：** 100%
+**完成日期：** 2026-02-08
+
+### 阶段 11：未实施功能开发 ✅ 已完成 (100%) ✨ 新增
+- [x] **虚拟滚动集成** (P1 - 中优先级)
+  - [x] 在 `chat-workspace.tsx` 中集成 `SmartMessageList` 组件
+  - [x] 消息 < 50 条时使用简单滚动
+  - [x] 消息 ≥ 50 条时自动切换虚拟滚动
+  - [x] 自动滚动功能正常
+- [x] **国际化支持 i18n** (P1 - 中优先级)
+  - [x] 创建自定义 i18n 解决方案（React Context）
+  - [x] 创建语言文件：`locales/zh-CN.json` 和 `locales/en.json`
+  - [x] 更新设置页面添加语言选择器
+  - [x] 集成 `I18nProvider` 到根布局
+- [x] **LLM Provider 扩展** (P2 - 低优先级)
+  - [x] 创建 `src/story/llm/gemini_provider.py` - Google Gemini 支持
+  - [x] 创建 `src/story/llm/azure_openai_provider.py` - Azure OpenAI 支持
+  - [x] 创建 `src/story/llm/ollama_provider.py` - Ollama 本地 LLM 支持
+  - [x] 更新 `base.py` 工厂函数支持新 Provider
+  - [x] 更新 `.env.example` 添加新 Provider 配置
+- [x] **JWT 认证启用** (P0 - 高优先级)
+  - [x] 修改 `auth.py` 从环境变量读取 `JWT_SECRET_KEY`
+  - [x] 创建 `src/api/routers/auth.py` - 登录、刷新、验证端点
+  - [x] 更新 `.env.example` 添加 JWT 配置
+  - [x] 创建 `frontend/src/lib/auth.ts` - 认证上下文和 Hook
+  - [x] 创建 `frontend/src/app/login/page.tsx` - 登录页面
+  - [x] 更新 `frontend/src/lib/api.ts` 携带 JWT 令牌，处理 401 跳转
+- [x] **向量数据库启用** (P2 - 低优先级)
+  - [x] 修改 `config.yaml` 设置 `vector_db.enabled: true`
+  - [x] 验证 ChromaDB 集成代码正确
+- [x] **Sentry 错误追踪** (P2 - 低优先级)
+  - [x] 在 `src/api/main.py` 中初始化 Sentry
+  - [x] 更新 `.env.example` 添加 `SENTRY_DSN` 配置
+  - [x] 添加 `sentry-sdk[fastapi]` 到 `requirements.txt`
+- [x] **用户分析功能** (P3 - 可选)
+  - [x] 创建 `src/api/analytics/router.py` - 事件记录、统计查询 API
+  - [x] 创建 `frontend/src/lib/analytics.ts` - 隐私优先分析
+  - [x] 集成 `AnalyticsProvider` 到根布局
+  - [x] 更新认证中间件排除分析端点
+
+**完成度：** 100%
+**完成日期：** 2026-02-09
 
 ---
 
@@ -298,95 +251,93 @@
 - ✅ 环境变量配置 (.env)
 
 ### 记忆系统 (100%)
-- ✅ 记忆系统抽象接口 (src/memory/base.py) - 262 行
-- ✅ 分层记忆系统实现 (src/memory/hierarchical.py) - 348 行
-- ✅ 向量存储系统 (src/memory/) - 339 行
+- ✅ 记忆系统抽象接口 (src/memory/base.py)
+- ✅ 分层记忆系统实现 (src/memory/hierarchical.py)
+- ✅ 向量存储系统 (src/memory/vector.py) - ChromaDB 已启用 ✨
 - ✅ 单元测试 (3 个测试文件，80+ 测试用例)
 
 ### LLM 集成系统 (100%)
-- ✅ LLM 抽象接口 (src/story/llm/base.py) - 348 行
-- ✅ Claude API 集成 (src/story/llm/claude_provider.py) - 295 行
-- ✅ OpenAI API 集成 (src/story/llm/openai_provider.py) - 200 行
+- ✅ LLM 抽象接口 (src/story/llm/base.py)
+- ✅ Claude API 集成 (src/story/llm/claude_provider.py)
+- ✅ OpenAI API 集成 (src/story/llm/openai_provider.py)
+- ✅ **Google Gemini 集成** (src/story/llm/gemini_provider.py) ✨ 新增
+- ✅ **Azure OpenAI 集成** (src/story/llm/azure_openai_provider.py) ✨ 新增
+- ✅ **Ollama 本地 LLM 集成** (src/story/llm/ollama_provider.py) ✨ 新增
 
 ### 正文生成引擎 (100%)
-- ✅ 提示词模板系统 (src/story/generation/prompt_templates.py) - 428 行
-- ✅ 内容生成器 (src/story/generation/content_generator.py) - 481 行
-- ✅ 一致性检查 (src/story/generation/consistency.py) - 520 行
-- ✅ 内容管理器 (src/story/generation/content_manager.py) - 558 行
-- ✅ 完整测试覆盖 (tests/test_generation/) - 1,850+ 行
+- ✅ 提示词模板系统 (src/story/generation/prompt_templates.py)
+- ✅ 内容生成器 (src/story/generation/content_generator.py)
+- ✅ 一致性检查 (src/story/generation/consistency.py)
+- ✅ 内容管理器 (src/story/generation/content_manager.py)
+- ✅ 完整测试覆盖 (tests/test_generation/)
 
 ### 对话式设定提取系统 (100%)
-- ✅ 数据模型 (src/story/setting_extractor/models.py) - 430 行
-- ✅ 对话意图识别器 (src/story/setting_extractor/intent_recognizer.py) - 226 行
-- ✅ 设定提取器 (src/story/setting_extractor/setting_extractor.py) - 340 行
-- ✅ 完整性检查器 (src/story/setting_extractor/completeness_checker.py) - 455 行
-- ✅ AI 设定补全模块 (src/story/setting_extractor/ai_completer.py) - 354 行
-- ✅ 对话式 Agent (src/story/setting_extractor/conversational_agent.py) - 465 行
-- ✅ 修改理解引擎 (src/story/setting_extractor/modification_engine.py) - 568 行
-- ✅ 创作决策引擎 (src/story/creation/creation_decision.py) - 435 行
-- ✅ 冲突检测器 (src/story/setting_extractor/conflict_detector.py) - 342 行
-- ✅ 记忆系统集成 (src/story/setting_extractor/utils.py) - 123 行
+- ✅ 数据模型 (src/story/setting_extractor/models.py)
+- ✅ 对话意图识别器 (src/story/setting_extractor/intent_recognizer.py)
+- ✅ 设定提取器 (src/story/setting_extractor/setting_extractor.py)
+- ✅ 完整性检查器 (src/story/setting_extractor/completeness_checker.py)
+- ✅ AI 设定补全模块 (src/story/setting_extractor/ai_completer.py)
+- ✅ 对话式 Agent (src/story/setting_extractor/conversational_agent.py)
+- ✅ 修改理解引擎 (src/story/setting_extractor/modification_engine.py)
+- ✅ 创作决策引擎 (src/story/creation/creation_decision.py)
+- ✅ 冲突检测器 (src/story/setting_extractor/conflict_detector.py)
+- ✅ 记忆系统集成 (src/story/setting_extractor/utils.py)
 
-### 后端 API 服务 (100%) ✨ 新增
+### 后端 API 服务 (100%)
 - ✅ FastAPI 应用入口 (src/api/main.py)
 - ✅ API 数据模型 (src/api/models/)
-  - ✅ chat.py - 聊天相关模型
-  - ✅ project.py - 项目相关模型
-  - ✅ generation.py - 生成相关模型
 - ✅ API 路由 (src/api/routers/)
-  - ✅ health.py - 健康检查
-  - ✅ chat.py - 聊天接口
-  - ✅ projects.py - 项目管理
-  - ✅ generation.py - 内容生成
-- ✅ 数据库模块 (src/api/database/) ✨ 新增
-  - ✅ models.py - ORM 模型（会话、消息、项目、章节、版本、任务）
-  - ✅ crud.py - CRUD 操作封装
-  - ✅ session.py - 会话管理
-  - ✅ config.py - 数据库配置
-- ✅ 缓存模块 (src/api/cache/) ✨ 新增
-  - ✅ 缓存管理器
-  - ✅ 缓存装饰器
-  - ✅ TTL 缓存支持
-- ✅ 中间件 (src/api/middleware/) ✨ 新增
+- ✅ 数据库模块 (src/api/database/)
+- ✅ 缓存模块 (src/api/cache/)
+- ✅ 中间件 (src/api/middleware/)
   - ✅ 性能监控中间件
-  - ✅ 慢查询日志
-  - ✅ 缓存命中率统计
+  - ✅ JWT 认证中间件（环境变量配置） ✨
+  - ✅ 速率限制中间件
+  - ✅ 输入验证中间件
+- ✅ **认证路由** (src/api/routers/auth.py) ✨ 新增
+  - ✅ POST /api/v1/auth/login - 用户登录
+  - ✅ POST /api/v1/auth/refresh - 刷新令牌
+  - ✅ POST /api/v1/auth/verify - 验证令牌
+- ✅ **分析路由** (src/api/analytics/) ✨ 新增
+  - ✅ POST /api/v1/analytics/track - 记录事件
+  - ✅ GET /api/v1/analytics/stats - 获取统计
+  - ✅ POST /api/v1/analytics/consent - 更新同意状态
 
-### 前端界面 (100%) ✨ 新增
-- ✅ 设计系统 (iOS/macOS 风格)
-  - ✅ 颜色方案（橙色主色调，非AI风格蓝紫渐变）
-  - ✅ 字体系统（Geist Sans/Mono）
-  - ✅ 圆角规范（8-24px）
-  - ✅ 阴影系统
-  - ✅ 毛玻璃效果
+### 前端界面 (100%)
+- ✅ 设计系统（iOS/macOS 风格）
 - ✅ 全局样式 (frontend/src/app/globals.css)
 - ✅ 工具函数 (frontend/src/lib/utils.ts)
 - ✅ 类型定义 (frontend/src/lib/types.ts)
-- ✅ API 客户端 (frontend/src/lib/api.ts)
-- ✅ 缓存工具 (frontend/src/lib/cache.ts) ✨ 新增
+- ✅ API 客户端 (frontend/src/lib/api.ts) - JWT 令牌支持 ✨
+- ✅ **认证模块** (frontend/src/lib/auth.ts) ✨ 新增
+  - ✅ JWT 令牌存储和刷新
+  - ✅ 登录/登出功能
+  - ✅ AuthContext 和 useAuth Hook
+- ✅ **国际化模块** (frontend/src/lib/i18n/) ✨ 新增
+  - ✅ I18nProvider 和 useI18n Hook
+  - ✅ zh-CN.json 和 en.json 翻译文件
+  - ✅ 语言选择器
+- ✅ **用户分析模块** (frontend/src/lib/analytics.ts) ✨ 新增
+  - ✅ AnalyticsProvider 和 useAnalytics Hook
+  - ✅ 隐私优先的事件跟踪
+  - ✅ 用户同意管理
 - ✅ UI 组件 (frontend/src/components/ui/)
-  - ✅ button.tsx
-  - ✅ card.tsx
-  - ✅ input.tsx
-  - ✅ avatar.tsx
-  - ✅ badge.tsx
-  - ✅ progress.tsx
 - ✅ 布局组件 (frontend/src/components/layout/)
-  - ✅ bottom-tab-bar.tsx
-- ✅ 状态管理 (frontend/src/store/) ✨ 新增
-  - ✅ projectStore.ts - 项目状态管理（离线检测、乐观更新）
-  - ✅ sessionStore.ts - 会话状态管理（消息缓存、离线支持）
-  - ✅ generationStore.ts - 生成任务状态管理
-  - ✅ uiStore.ts - UI 状态管理
+- ✅ 状态管理 (frontend/src/store/)
 - ✅ 业务组件
-  - ✅ novel-card.tsx (frontend/src/components/novel/)
-  - ✅ reading-view.tsx (frontend/src/components/novel/)
-  - ✅ chat-workspace.tsx (frontend/src/components/chat/)
+  - ✅ novel-card.tsx
+  - ✅ reading-view.tsx
+  - ✅ chat-workspace.tsx - 集成 SmartMessageList ✨
+- ✅ **虚拟滚动组件** (frontend/src/components/chat/virtual-message-list.tsx) ✨ 新增
+  - ✅ VirtualMessageList - 虚拟滚动实现
+  - ✅ SimpleMessageList - 简单滚动实现
+  - ✅ SmartMessageList - 自动选择渲染方式
 - ✅ 页面
   - ✅ 首页 (frontend/src/app/page.tsx)
   - ✅ 聊天页 (frontend/src/app/chat/page.tsx)
   - ✅ 阅读页 (frontend/src/app/novel/[id]/page.tsx)
-  - ✅ 设置页 (frontend/src/app/settings/page.tsx)
+  - ✅ 设置页 (frontend/src/app/settings/page.tsx) - 语言选择器 ✨
+  - ✅ **登录页** (frontend/src/app/login/page.tsx) ✨ 新增
 
 ---
 
@@ -405,17 +356,22 @@
 | GET | `/health` | 健康检查 |
 | GET | `/` | 根路径 |
 
+#### 认证 API ✨ 新增
+| 方法 | 端点 | 说明 |
+|------|------|------|
+| POST | `/api/v1/auth/login` | 用户登录 |
+| POST | `/api/v1/auth/refresh` | 刷新访问令牌 |
+| POST | `/api/v1/auth/verify` | 验证令牌有效性 |
+| GET | `/api/v1/auth/me` | 获取当前用户信息 |
+
 #### 聊天 API
 | 方法 | 端点 | 说明 |
 |------|------|------|
 | POST | `/api/v1/chat/` | 发送聊天消息 |
-| POST | `/api/v1/chat/stream/` | **流式聊天消息（SSE）** ✨ 新增 |
+| POST | `/api/v1/chat/stream/` | 流式聊天消息（SSE） |
 | GET | `/api/v1/chat/sessions` | 列出所有会话 |
 | GET | `/api/v1/chat/sessions/{id}/summary` | 获取会话摘要 |
 | DELETE | `/api/v1/chat/sessions/{id}` | 删除会话 |
-| GET | `/api/v1/chat/admin/cache-stats` | 获取Agent缓存统计（管理员） |
-| POST | `/api/v1/chat/admin/cleanup-cache` | 清理Agent缓存（管理员） |
-| GET | `/api/v1/chat/admin/performance-stats` | 获取性能统计（管理员） |
 
 #### 项目管理 API
 | 方法 | 端点 | 说明 |
@@ -435,6 +391,14 @@
 | GET | `/api/v1/generation/tasks/{id}` | 获取生成任务状态 |
 | GET | `/api/v1/generation/tasks` | 列出生成任务 |
 
+#### 用户分析 API ✨ 新增
+| 方法 | 端点 | 说明 |
+|------|------|------|
+| POST | `/api/v1/analytics/track` | 记录分析事件 |
+| GET | `/api/v1/analytics/stats` | 获取统计信息 |
+| POST | `/api/v1/analytics/consent` | 更新分析同意状态 |
+| GET | `/api/v1/analytics/consent` | 获取分析同意状态 |
+
 ---
 
 ## 项目结构
@@ -442,137 +406,85 @@
 ```
 write-agent/
 ├── src/
-│   ├── api/                    # 后端 API 服务 ✨ 新增
-│   │   ├── main.py             # FastAPI 应用入口
+│   ├── api/                    # 后端 API 服务
+│   │   ├── main.py             # FastAPI 应用入口（Sentry 初始化） ✨
 │   │   ├── models/             # Pydantic 数据模型
-│   │   │   ├── __init__.py
-│   │   │   ├── chat.py         # 聊天模型
-│   │   │   ├── project.py      # 项目模型
-│   │   │   └── generation.py   # 生成模型
 │   │   ├── routers/            # API 路由
+│   │   │   ├── auth.py         # 认证路由 ✨ 新增
+│   │   │   └── ...
+│   │   ├── analytics/          # 分析模块 ✨ 新增
 │   │   │   ├── __init__.py
-│   │   │   ├── health.py       # 健康检查
-│   │   │   ├── chat.py         # 聊天接口
-│   │   │   ├── chat_stream.py  # 流式聊天接口 ✨ 新增
-│   │   │   ├── projects.py     # 项目管理
-│   │   │   └── generation.py   # 内容生成
-│   │   ├── database/           # 数据库模块 ✨ 新增
-│   │   │   ├── __init__.py
-│   │   │   ├── base.py         # Base 模型
-│   │   │   ├── models.py       # ORM 模型
-│   │   │   ├── crud.py         # CRUD 操作
-│   │   │   ├── session.py      # 会话管理
-│   │   │   └── config.py       # 数据库配置
-│   │   ├── cache/              # 缓存模块 ✨ 新增
-│   │   │   ├── __init__.py
-│   │   │   ├── decorators.py   # 缓存装饰器
-│   │   │   └── redis_cache.py  # Redis 缓存实现 ✨ 新增
-│   │   └── middleware/         # 中间件 ✨ 新增
-│   │       ├── __init__.py
-│   │       ├── performance.py  # 性能监控
-│   │       ├── auth.py         # JWT认证 ✨ 新增
-│   │       ├── rate_limit.py   # 速率限制 ✨ 新增
-│   │       └── validation.py   # 输入验证 ✨ 新增
-│   ├── llm/                    # LLM重试机制 ✨ 新增
-│   │   ├── __init__.py
-│   │   └── llm_with_retry.py   # 超时重试装饰器
-│   ├── memory/                 # 记忆系统
-│   ├── story/                  # 故事创作模块
-│   │   ├── llm/                # LLM 集成
-│   │   ├── generation/         # 内容生成
-│   │   ├── setting_extractor/  # 设定提取
-│   │   ├── creation/           # 创作决策
-│   │   └── material_collector.py
-│   └── __init__.py
-├── frontend/                   # 前端应用 ✨ 新增
+│   │   │   └── router.py       # 分析 API 路由
+│   │   ├── database/           # 数据库模块
+│   │   ├── cache/              # 缓存模块
+│   │   └── middleware/         # 中间件
+│   │       └── auth.py         # JWT 认证（环境变量配置） ✨
+│   ├── story/llm/              # LLM 集成
+│   │   ├── base.py             # LLM 抽象接口（工厂函数扩展） ✨
+│   │   ├── claude_provider.py
+│   │   ├── openai_provider.py
+│   │   ├── gemini_provider.py  # Google Gemini ✨ 新增
+│   │   ├── azure_openai_provider.py  # Azure OpenAI ✨ 新增
+│   │   └── ollama_provider.py  # Ollama 本地 LLM ✨ 新增
+│   └── memory/                 # 记忆系统
+├── frontend/                   # 前端应用
 │   ├── src/
 │   │   ├── app/                # Next.js 页面
-│   │   │   ├── page.tsx        # 首页（书架）
-│   │   │   ├── chat/           # 聊天页
-│   │   │   ├── novel/          # 小说阅读
-│   │   │   └── settings/       # 设置页
+│   │   │   ├── login/          # 登录页 ✨ 新增
+│   │   │   │   └── page.tsx
+│   │   │   └── settings/       # 设置页（语言选择器） ✨
 │   │   ├── components/         # React 组件
-│   │   │   ├── ui/             # 基础 UI 组件
-│   │   │   │   ├── button.tsx
-│   │   │   │   ├── card.tsx
-│   │   │   │   ├── input.tsx
-│   │   │   │   ├── avatar.tsx
-│   │   │   │   ├── badge.tsx
-│   │   │   │   ├── progress.tsx
-│   │   │   │   ├── skeleton.tsx         # 骨架屏组件 ✨ 新增
-│   │   │   │   ├── progress-stream.tsx  # 流式进度组件 ✨ 新增
-│   │   │   │   ├── toast.tsx            # Toast通知组件 ✨ 新增
-│   │   │   │   └── a11y.tsx             # 可访问性组件 ✨ 新增
-│   │   │   ├── layout/         # 布局组件
-│   │   │   ├── novel/          # 小说相关组件
-│   │   │   └── chat/           # 聊天组件
-│   │   ├── hooks/              # 自定义 Hooks ✨ 新增
-│   │   │   ├── index.ts
-│   │   │   ├── useDebounce.ts         # 防抖 Hook
-│   │   │   └── useStreamingChat.ts    # 流式聊天 Hook
-│   │   ├── store/              # 状态管理 ✨ 新增
-│   │   │   ├── index.ts
-│   │   │   ├── projectStore.ts
-│   │   │   ├── sessionStore.ts
-│   │   │   ├── generationStore.ts
-│   │   │   └── uiStore.ts
-│   │   └── lib/                # 工具函数和类型
-│   │       ├── api.ts          # API 客户端 ✨ 新增
-│   │       ├── stream-client.ts # SSE 客户端 ✨ 新增
-│   │       ├── cache.ts        # 前端缓存 ✨ 新增
-│   │       ├── api-dedup.ts    # 请求去重 ✨ 新增
-│   │       ├── api-cancel.ts   # 请求取消 ✨ 新增
-│   │       ├── errors.ts       # 错误处理 ✨ 新增
-│   │       ├── types.ts        # 类型定义
-│   │       ├── utils.ts        # 工具函数
-│   │       └── mock-data.ts    # 模拟数据
-│   ├── styles/                 # 样式文件 ✨ 新增
-│   │   └── responsive.css   # 响应式工具类 ✨ 新增
-│   ├── package.json
-│   ├── next.config.ts
-│   └── tailwind.config.ts
-├── docker-compose.yml           # Docker 编排配置 ✨ 新增
-├── docker-compose.monitoring.yml # 监控栈配置 ✨ 新增
-├── Dockerfile.backend           # 后端 Dockerfile ✨ 新增
-├── nginx.conf                   # Nginx 配置 ✨ 新增
-├── nginx-ssl.conf               # Nginx SSL配置 ✨ 新增
-├── scripts/                    # 工具脚本 ✨ 新增
-│   ├── init_db.py              # 数据库初始化
-│   ├── migrate_db.py           # 数据库迁移
-│   ├── generate_pwa_icons.sh   # PWA图标生成 ✨ 新增
-│   ├── backup.sh               # 数据库备份 ✨ 新增
-│   ├── restore.sh              # 数据库恢复 ✨ 新增
-│   └── integration_test.sh     # 集成测试 ✨ 新增
-├── tests/                      # 测试文件
-│   ├── conftest.py             # pytest配置 ✨ 新增
-│   └── e2e/                    # 端到端测试 ✨ 新增
-│       ├── conftest.py         # E2E fixtures ✨ 新增
-│       ├── __init__.py
-│       ├── test_chat_flow.py
-│       ├── test_project_lifecycle.py
-│       └── test_generation_flow.py
-├── alembic/                    # 数据库迁移 ✨ 新增
-│   ├── env.py
-│   └── versions/
+│   │   │   └── chat/
+│   │   │       ├── chat-workspace.tsx  # 集成 SmartMessageList ✨
+│   │   │       └── virtual-message-list.tsx  # 虚拟滚动组件 ✨
+│   │   ├── lib/
+│   │   │   ├── auth.ts         # 认证模块 ✨ 新增
+│   │   │   ├── i18n/           # 国际化模块 ✨ 新增
+│   │   │   │   └── index.ts
+│   │   │   ├── analytics.ts    # 用户分析模块 ✨ 新增
+│   │   │   └── api.ts          # API 客户端（JWT 支持） ✨
+│   │   └── locales/            # 翻译文件 ✨ 新增
+│   │       ├── zh-CN.json
+│   │       └── en.json
 ├── config/
-│   ├── config.yaml             # 应用配置
-│   ├── prometheus.yml          # Prometheus配置 ✨ 新增
-│   ├── loki-config.yaml        # Loki配置 ✨ 新增
-│   ├── promtail-config.yml     # Promtail配置 ✨ 新增
-│   └── grafana/                # Grafana配置 ✨ 新增
-│       └── provisioning/
-│           └── datasources/
-├── examples/                   # 示例代码
-├── ssl/                        # SSL证书目录 ✨ 新增
-├── .env                        # 环境变量
-├── .env.example                # 环境变量示例 ✨ 新增
-├── .env.production.example     # 生产环境模板 ✨ 新增
-├── .pre-commit-config.yaml     # Pre-commit钩子 ✨ 新增
-├── alembic.ini                 # Alembic 配置 ✨ 新增
-├── requirements.txt
-├── DEPLOYMENT.md               # 部署文档 ✨ 新增
-├── claude.md                   # 本文档
-└── README.md
+│   └── config.yaml             # 应用配置（vector_db.enabled=true） ✨
+├── .env                        # 环境变量（JWT_SECRET_KEY） ✨
+├── .env.example                # 环境变量示例（新增配置） ✨
+├── requirements.txt            # Python 依赖（sentry-sdk） ✨
+└── claude.md                   # 本文档
+```
+
+---
+
+## 环境变量配置
+
+### 新增环境变量
+
+```bash
+# JWT 认证 ✨ 新增
+JWT_SECRET_KEY=your-secret-key-here
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=10080
+REQUIRE_AUTH=false
+
+# LLM Provider 扩展 ✨ 新增
+LLM_PROVIDER=openai  # openai, anthropic, gemini, azure-openai, ollama
+
+# Google Gemini ✨ 新增
+GEMINI_API_KEY=your-gemini-api-key
+GEMINI_MODEL=gemini-2.0-flash-exp
+
+# Azure OpenAI ✨ 新增
+AZURE_OPENAI_API_KEY=your-azure-openai-key
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
+AZURE_OPENAI_DEPLOYMENT=gpt-4
+
+# Ollama ✨ 新增
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2
+
+# Sentry 错误追踪 ✨ 新增
+SENTRY_DSN=https://your-sentry-dsn
+ENVIRONMENT=production
 ```
 
 ---
@@ -594,16 +506,12 @@ cp .env.example .env
 
 # 编辑 .env 文件，配置必要的环境变量
 # OPENAI_API_KEY=your_key_here
-# OPENAI_BASE_URL=https://api.openai.com/v1
+# JWT_SECRET_KEY=your-secret-key-here
 ```
 
 #### 3. 初始化数据库
 ```bash
-# 方式一：使用初始化脚本（推荐）
 python scripts/init_db.py
-
-# 方式二：使用 Alembic 迁移
-python scripts/migrate_db.py upgrade
 ```
 
 #### 4. 启动后端服务
@@ -617,44 +525,9 @@ cd /root/write-agent/frontend
 npm run dev
 ```
 
-### 常规启动
-
-#### 后端服务
-```bash
-cd /root/write-agent
-python3 -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-#### 前端服务
-```bash
-cd /root/write-agent/frontend
-npm run dev
-```
-
-### 数据库迁移
-
-#### 创建新迁移
-```bash
-python scripts/migrate_db.py revision --autogenerate -m "描述信息"
-```
-
-#### 升级到最新版本
-```bash
-python scripts/migrate_db.py upgrade
-```
-
-#### 查看当前版本
-```bash
-python scripts/migrate_db.py current
-```
-
-#### 查看迁移历史
-```bash
-python scripts/migrate_db.py history
-```
-
 ### 访问地址
 - **前端:** http://localhost:3000
+- **登录页:** http://localhost:3000/login ✨ 新增
 - **后端 API:** http://localhost:8000
 - **API 文档:** http://localhost:8000/docs
 
@@ -663,34 +536,22 @@ python scripts/migrate_db.py history
 ## 代码统计
 
 ### 文件统计
-- **总文件数：** 140+ 个
-- **Python 源代码：** 50+ 个
-- **测试文件：** 25+ 个
-- **前端文件：** 40+ 个
-- **配置/文档：** 25+ 个
+- **总文件数：** 150+ 个（新增 10+）
+- **Python 源代码：** 55+ 个（新增 5+）
+- **前端文件：** 50+ 个（新增 5+）
+- **配置/文档：** 30+ 个
 
 ### 代码行数
 | 模块 | 文件数 | 行数 | 状态 |
 |------|--------|------|------|
 | 记忆系统 | 6 | ~1,355 | ✅ 100% |
-| 素材收集 | 3 | ~751 | ✅ 100% |
 | 设定提取 | 12 | ~4,480 | ✅ 100% |
-| 创作决策 | 2 | ~435 | ✅ 100% |
-| LLM 集成 | 3 | ~710 | ✅ 100% |
+| LLM 集成 | **6** | **~1,500** | **✅ 100%** |
 | 内容生成 | 4 | ~2,450 | ✅ 100% |
-| **后端 API** | **14** | **~3,200** | **✅ 100%** |
-| **数据库模块** | **6** | **~900** | **✅ 100%** |
-| **缓存模块** | **4** | **~800** | **✅ 100%** |
-| **中间件** | **5** | **~1,500** | **✅ 100%** |
-| **前端** | **45+** | **~6,000+** | **✅ 100%** |
-| **E2E 测试** | **4** | **~600** | **✅ 100%** |
-| 测试代码 | 20 | ~5,000 | ✅ 完成 |
-| 示例代码 | 4 | ~1,704 | ✅ 完成 |
-| **Docker 配置** | **5** | **~400** | **✅ 新增** |
-| **监控配置** | **5** | **~300** | **✅ 新增** |
-| **脚本工具** | **6** | **~600** | **✅ 新增** |
-| **文档** | **3** | **~800** | **✅ 新增** |
-| **总计** | **140+** | **~30,000+** | |
+| 后端 API | **16** | **~3,500** | **✅ 100%** |
+| 前端 | **55+** | **~7,000+** | **✅ 100%** |
+| **新增模块** | **10+** | **~2,000+** | **✅ 新增** |
+| **总计** | **150+** | **~32,000+** | |
 
 ---
 
@@ -700,266 +561,84 @@ python scripts/migrate_db.py history
 
 ```
 阶段进度：
-基础架构      ████████████████████████ 100% ████████████████████████
-记忆系统      ████████████████████████ 100% ████████████████████████
-设定提取      ████████████████████████ 100% ████████████████████████
-创作决策      ████████████████████████ 100% ████████████████████████
-LLM集成       ████████████████████████ 100% ████████████████████████
-正文生成      ████████████████████████ 100% ████████████████████████
-后端API       ████████████████████████ 100% ████████████████████████
-前端界面      ████████████████████████ 100% ████████████████████████
-前后端联通    ████████████████████████ 100% ████████████████████████
-数据持久化    ████████████████████████ 100% ████████████████████████
-性能优化      ████████████████████████ 100% ████████████████████████
-安全加固      ████████████████████████ 100% ████████████████████████
-后续开发计划  ████████████████████████ 100% ████████████████████████ ✨
+基础架构      ████████████████████████ 100%
+记忆系统      ████████████████████████ 100%
+设定提取      ████████████████████████ 100%
+创作决策      ████████████████████████ 100%
+LLM集成       ████████████████████████ 100%
+正文生成      ████████████████████████ 100%
+后端API       ████████████████████████ 100%
+前端界面      ████████████████████████ 100%
+前后端联通    ████████████████████████ 100%
+数据持久化    ████████████████████████ 100%
+性能优化      ████████████████████████ 100%
+安全加固      ████████████████████████ 100%
+未实施功能    ████████████████████████ 100% ✨ 新增
 ```
 
-### ✅ 已完成模块
-1. **记忆系统（100%）** - 完全可用
-2. **素材收集系统（100%）** - 可改造
-3. **对话式设定提取（100%）** - 完全完成
-4. **创作决策引擎（100%）** - 完全完成
-5. **LLM 内容生成系统（100%）** - 完全完成
-6. **用户交互界面（100%）** - 完全完成
-7. **后端 API 服务（100%）** - 完全完成
-8. **前后端联通（100%）** - 完全完成
-9. **数据持久化（100%）** - 完全完成
-   - 数据库 ORM 模型
-   - CRUD 操作封装
-   - Alembic 数据库迁移
-   - 缓存系统
-10. **性能监控（100%）** - 完全完成
-    - 性能监控中间件
-    - 慢查询日志
-    - 缓存命中率统计
-11. **端到端测试（100%）** - 完全完成
-    - 聊天流程测试
-    - 项目生命周期测试
-    - 生成流程测试
-12. **性能与用户体验优化（100%）** - 完全完成 ✨ 新增
-    - LLM 异步调用（解决阻塞）
-    - SSE 流式响应
-    - 搜索防抖优化
-    - 骨架屏加载
-    - Next.js 构建优化
-    - Redis 缓存支持
-    - Docker 部署方案
-13. **安全加固与性能深度优化（100%）** - 完全完成 ✨ 新增
-    - JWT 认证中间件
-    - 速率限制中间件（滑动窗口+令牌桶）
-    - 输入验证与XSS防护
-    - 数据库查询优化（N+1问题修复）
-    - 连接池配置优化
-    - LLM 超时重试机制
-    - 缓存自动清理
-    - React.memo 前端优化
-    - 请求去重/取消
-    - 代码分割优化
-    - 加载状态改进（AdaptiveSkeleton）
-    - 错误处理改进（错误类、恢复建议）
-    - 可访问性增强（LiveRegion、FocusTrap、键盘导航）
-    - 响应式设计优化（安全区域、触摸优化）
-14. **后续开发计划（100%）** - 完全完成 ✨ 新增
-    - 关键问题修复（未定义常量、缓存策略、中间件导出）
-    - 测试基础设施（pytest配置、导入路径修复、E2E隔离）
-    - 前端完善（PWA图标、环境配置）
-    - 生产环境加固（SSL/TLS、监控栈、备份脚本）
-    - 文档与部署（DEPLOYMENT.md、pre-commit钩子、集成测试）
-    - JWT 认证中间件
-    - 速率限制中间件（滑动窗口+令牌桶）
-    - 输入验证与XSS防护
-    - 数据库查询优化（N+1问题修复）
-    - 连接池配置优化
-    - LLM 超时重试机制
-    - 缓存自动清理
-    - React.memo 前端优化
-    - 请求去重/取消
-    - 代码分割优化
-    - 加载状态改进（AdaptiveSkeleton）
-    - 错误处理改进（错误类、恢复建议）
-    - 可访问性增强（LiveRegion、FocusTrap、键盘导航）
-    - 响应式设计优化（安全区域、触摸优化）
-
-### 阶段 10：后续开发计划 ✅ 已完成 (100%) ✨ 新增
-- [x] **关键问题修复** (Phase 1)
-  - [x] 修复 chat.py 未定义常量
-  - [x] 统一缓存策略（创建共享会话历史模块）
-  - [x] 修复中间件导出
-  - [x] 添加缺失依赖 (psutil>=5.9.0)
-- [x] **测试基础设施** (Phase 2)
-  - [x] 创建 pytest 配置 (`tests/conftest.py`)
-  - [x] 修复测试导入路径
-  - [x] E2E 测试数据库隔离 (`tests/e2e/conftest.py`)
-  - [x] 添加测试工具依赖 (pytest-cov, faker)
-- [x] **前端完善** (Phase 3)
-  - [x] PWA 图标生成脚本 (`scripts/generate_pwa_icons.sh`)
-  - [x] 前端环境配置 (`.env.local`, `.env.production`)
-  - [x] 验证前端构建系统
-- [x] **生产环境加固** (Phase 4)
-  - [x] SSL/TLS 配置 (`nginx-ssl.conf`)
-  - [x] 监控日志栈 (`docker-compose.monitoring.yml`)
-  - [x] 数据库备份/恢复脚本
-- [x] **文档与部署** (Phase 5)
-  - [x] 部署文档 (`DEPLOYMENT.md`)
-  - [x] 生产环境模板 (`.env.production.example`)
-  - [x] Pre-commit 代码质量钩子 (`.pre-commit-config.yaml`)
-  - [x] 集成测试脚本 (`scripts/integration_test.sh`)
-
-**完成度：** 100%
-**完成日期：** 2026-02-08
+### ✅ 已完成模块 (15个)
+1. **记忆系统（100%）** - ChromaDB 已启用 ✨
+2. **素材收集系统（100%）**
+3. **对话式设定提取（100%）**
+4. **创作决策引擎（100%）**
+5. **LLM 内容生成系统（100%）** - 支持 6 种 Provider ✨
+6. **用户交互界面（100%）** - 支持国际化 ✨
+7. **后端 API 服务（100%）** - 包含认证和分析 API ✨
+8. **前后端联通（100%）**
+9. **数据持久化（100%）**
+10. **性能监控（100%）**
+11. **端到端测试（100%）**
+12. **性能与用户体验优化（100%）**
+13. **安全加固与性能深度优化（100%）**
+14. **后续开发计划（100%）**
+15. **未实施功能开发（100%）** ✨ 新增
+    - 虚拟滚动集成
+    - 国际化支持（i18n）
+    - LLM Provider 扩展（Gemini、Azure OpenAI、Ollama）
+    - JWT 认证启用
+    - 向量数据库启用
+    - Sentry 错误追踪
+    - 用户分析功能
 
 ---
 
 ## 最后更新
 
-- **日期：** 2026-02-08
+- **日期：** 2026-02-09
 - **更新人：** Claude Code
 - **更新内容：**
-  - ✅ **完成：阶段 10 - 后续开发计划（100% 完成）** ✨ 新增
-    - **关键问题修复** (Phase 1)
-      - 修复 `chat.py` 未定义常量 (`_session_history`, `_session_history_timestamps`, `_MAX_SESSION_HISTORY`)
-      - 统一缓存策略：创建 `src/api/cache/session_history.py` 共享模块
-      - 修复 `src/api/middleware/__init__.py` 导出，添加 `get_metrics`
-      - 添加 `psutil>=5.9.0` 依赖
-    - **测试基础设施** (Phase 2)
-      - 创建 `tests/conftest.py` - pytest 配置（事件循环、测试数据库、临时存储）
-      - 创建 `tests/e2e/conftest.py` - E2E 测试 fixtures（隔离测试数据库）
-      - 修复所有测试文件导入路径（移除手动 `sys.path.insert`）
-      - 添加 `pytest-cov>=4.1.0` 和 `faker>=20.0.0` 依赖
-    - **前端完善** (Phase 3)
-      - 创建 `scripts/generate_pwa_icons.sh` - PWA 图标生成脚本（8个尺寸 + maskable + screenshots）
-      - 创建 `frontend/.env.local` - 本地开发环境配置
-      - 创建 `frontend/.env.production` - 生产环境配置
-    - **生产环境加固** (Phase 4)
-      - 创建 `nginx-ssl.conf` - SSL/TLS 配置（HTTP/2, HSTS, 安全头）
-      - 创建 `docker-compose.monitoring.yml` - Prometheus + Grafana + Loki + Promtail
-      - 创建 `config/prometheus.yml` - Prometheus 配置
-      - 创建 `config/grafana/provisioning/` - Grafana 数据源配置
-      - 创建 `config/loki-config.yaml` - Loki 日志聚合配置
-      - 创建 `config/promtail-config.yml` - Promtail 日志收集配置
-      - 创建 `scripts/backup.sh` - 数据库备份脚本（7天保留）
-      - 创建 `scripts/restore.sh` - 数据库恢复脚本
-    - **文档与部署** (Phase 5)
-      - 创建 `DEPLOYMENT.md` - 完整部署指南
-      - 创建 `.env.production.example` - 生产环境变量模板
-      - 创建 `.pre-commit-config.yaml` - 代码质量钩子（black, isort, mypy, flake8, eslint, prettier）
-      - 创建 `scripts/integration_test.sh` - 集成测试脚本
-
-### 核心变化
-1. **新增共享模块：**
-   - `src/api/cache/session_history.py` - 会话历史管理器（chat.py 和 chat_stream.py 共享）
-
-2. **新增配置文件：**
-   - `nginx-ssl.conf` - HTTPS + HTTP/2 + 安全头配置
-   - `docker-compose.monitoring.yml` - 监控栈编排
-   - `config/prometheus.yml` - Prometheus 抓取配置
-   - `config/loki-config.yaml` - Loki 配置
-   - `config/promtail-config.yml` - Promtail 配置
-   - `config/grafana/provisioning/datasources/*.yml` - Grafana 数据源
-
-3. **新增工具脚本：**
-   - `scripts/generate_pwa_icons.sh` - PWA 图标生成
-   - `scripts/backup.sh` - 数据库备份
-   - `scripts/restore.sh` - 数据库恢复
-   - `scripts/integration_test.sh` - 集成测试
-
-4. **新增文档：**
-   - `DEPLOYMENT.md` - 部署指南
-   - `.env.production.example` - 生产环境模板
-   - `.pre-commit-config.yaml` - Pre-commit 配置
-
-### 项目状态
-**已完成：** 记忆系统、素材收集、对话式设定提取、LLM 集成、正文生成引擎、后端 API、前端界面、前后端联通、数据持久化、性能监控、端到端测试、性能与用户体验优化、安全加固与性能深度优化、**后续开发计划**
-**整体完成度：** 100% ✨ **生产就绪** ✨
-    - **JWT 认证中间件** (`src/api/middleware/auth.py`)
-      - `create_access_token()` - 创建JWT令牌
-      - `decode_token()` - 验证令牌
-      - `AuthMiddleware` - 认证中间件（可选启用）
-      - `get_current_user()` / `require_auth()` - 依赖注入
-    - **速率限制中间件** (`src/api/middleware/rate_limit.py`)
-      - `RateLimiter` - 滑动窗口算法实现
-      - `RateLimitMiddleware` - 全局限流中间件
-      - `TokenBucketRateLimiter` - 令牌桶算法
-      - 配置：默认60/分钟，聊天30/分钟，生成10/分钟
-    - **输入验证与XSS防护** (`src/api/middleware/validation.py`)
-      - `InputValidator` - 字符串清理、XSS/SQL注入检测
-      - `ValidationMiddleware` - 请求体验证
-      - `SecurityHeadersMiddleware` - 安全HTTP头
-      - `ContentLengthMiddleware` - 内容长度限制
-    - **数据库查询优化**
-      - 合并 `update_project_word_count` 为单次查询
-      - `get_project_with_chapters` 使用 selectinload
-      - `get_sessions_with_message_counts` 单次查询获取
-    - **连接池配置优化**
-      - PostgreSQL: pool_size=20, max_overflow=40
-      - SQLite: NullPool 配置
-    - **LLM 超时重试机制** (`src/api/llm/llm_with_retry.py`)
-      - `with_async_llm_retry` - 异步重试装饰器（60s超时，最多3次重试）
-      - `LLMTimeoutError`, `LLMRateLimitError` 等异常类
-      - `LLMRetryTracker` - 重试统计跟踪
-    - **缓存自动清理**
-      - `start_cleanup_task()` / `stop_cleanup_task()`
-      - 启动/关闭事件中管理清理任务
-    - **前端 React.memo 优化**
-      - 消息组件用 memo 包装
-      - useMemo 缓存计算值
-      - useCallback 缓存事件处理
-    - **请求去重** (`frontend/src/lib/api-dedup.ts`)
-      - `RequestDedupManager` - 去重管理器
-      - `dedupedFetch()` - 带去重的请求封装
-      - `useRequestDedup()` - React Hook
-    - **请求取消** (`frontend/src/lib/api-cancel.ts`)
-      - `RequestCancelManager` - 取消管理器
-      - `useRequestCancel()` - 自动取消组件请求
-      - `useCancellableFetch()` - 可取消的fetch
-    - **代码分割** (`frontend/next.config.ts`)
-      - 优化 webpack splitChunks 配置
-      - 分离 framework、lib、vendor、common chunk
-    - **加载状态优化** (`frontend/src/components/ui/skeleton.tsx`)
-      - `AdaptiveSkeleton` - 根据内容类型自动调整
-      - `DelayedSkeleton` - 延迟显示避免闪烁
-      - `StreamingTextSkeleton` - 流式文本加载效果
-    - **错误处理改进** (`frontend/src/lib/errors.ts`)
-      - `AppError`, `NetworkError`, `RateLimitError` 等错误类
-      - `parseAPIError()` - 解析API错误
-      - `getRecoverySuggestion()` - 获取恢复建议
-      - `useErrorHandler()` - React Hook
-      - Toast 组件支持重试按钮
-    - **可访问性增强** (`frontend/src/components/ui/a11y.tsx`)
-      - `LiveRegion` - 屏幕阅读器通知
-      - `FocusTrap` - 焦点陷阱
-      - `SkipLink` - 跳过导航链接
-      - `useKeyboardNavigation()` - 键盘导航Hook
-      - `useFocusReset()` - 焦点重置Hook
-    - **响应式设计优化** (`frontend/src/styles/responsive.css`)
-      - `.scrollbar-hide`, `.scrollbar-ios`
-      - `.safe-top/bottom/left/right` - 安全区域适配
-      - `.touch-hover`, `.touch-target` - 触摸优化
-      - 响应式显示/隐藏类
-      - 暗色模式、减少动画等用户偏好支持
+  - ✅ **完成：阶段 11 - 未实施功能开发（100% 完成）** ✨ 新增
+    - **虚拟滚动集成** - 在 `chat-workspace.tsx` 中集成 `SmartMessageList`
+    - **国际化支持（i18n）** - 创建轻量级 i18n 解决方案，支持中英文切换
+    - **LLM Provider 扩展** - 新增 Gemini、Azure OpenAI、Ollama 三种 Provider
+    - **JWT 认证启用** - 从环境变量读取密钥，创建认证路由和登录页面
+    - **向量数据库启用** - 在 `config.yaml` 中启用 ChromaDB
+    - **Sentry 错误追踪** - 在后端初始化 Sentry，支持环境变量配置
+    - **用户分析功能** - 创建后端分析 API 和前端分析模块（隐私优先设计）
 
 ### 核心变化
 1. **新增后端文件：**
-   - `src/api/middleware/auth.py` - JWT认证中间件
-   - `src/api/middleware/rate_limit.py` - 速率限制中间件
-   - `src/api/middleware/validation.py` - 输入验证中间件
-   - `src/api/llm/llm_with_retry.py` - LLM超时重试机制
+   - `src/api/routers/auth.py` - 认证路由
+   - `src/api/analytics/router.py` - 分析 API
+   - `src/story/llm/gemini_provider.py` - Gemini Provider
+   - `src/story/llm/azure_openai_provider.py` - Azure OpenAI Provider
+   - `src/story/llm/ollama_provider.py` - Ollama Provider
 
 2. **新增前端文件：**
-   - `frontend/src/lib/api-dedup.ts` - 请求去重
-   - `frontend/src/lib/api-cancel.ts` - 请求取消
-   - `frontend/src/lib/errors.ts` - 错误处理
-   - `frontend/src/components/ui/a11y.tsx` - 可访问性组件
-   - `frontend/src/styles/responsive.css` - 响应式工具类
+   - `frontend/src/app/login/page.tsx` - 登录页面
+   - `frontend/src/lib/auth.ts` - 认证模块
+   - `frontend/src/lib/i18n/index.ts` - 国际化模块
+   - `frontend/src/locales/zh-CN.json` - 简体中文翻译
+   - `frontend/src/locales/en.json` - 英文翻译
+   - `frontend/src/lib/analytics.ts` - 用户分析模块
 
-3. **中间件注册顺序：**
-   ```
-   CORS → SecurityHeaders → ContentLength → Auth → RateLimit → Validation → Monitoring → Performance
-   ```
+3. **配置更新：**
+   - `config/config.yaml` - 启用 `vector_db.enabled: true`
+   - `.env.example` - 新增 JWT、Gemini、Azure OpenAI、Ollama、Sentry 配置
+   - `requirements.txt` - 新增 `sentry-sdk[fastapi]`
 
 ### 项目状态
-**已完成：** 记忆系统、素材收集、对话式设定提取、LLM 集成、正文生成引擎、后端 API、前端界面、前后端联通、数据持久化、性能监控、端到端测试、性能与用户体验优化、安全加固与性能深度优化、**后续开发计划**
+**已完成：** 记忆系统、素材收集、对话式设定提取、LLM 集成（6种 Provider）、正文生成引擎、后端 API、前端界面（支持 i18n）、前后端联通、数据持久化、性能监控、端到端测试、性能与用户体验优化、安全加固、后续开发计划、**未实施功能开发**
 **整体完成度：** 100% ✨ **生产就绪** ✨
 
 ---
@@ -970,9 +649,11 @@ LLM集成       █████████████████████�
 - 用户体验优先
 - 技术可行性强
 - 前后端完整联通
-- 真实 LLM 已集成
-- 性能优化完成 ✨
-- Docker 部署就绪 ✨
-- 监控日志栈完整 ✨
-- 自动化测试就绪 ✨
-- 文档完善 ✨
+- 真实 LLM 已集成（6种 Provider）
+- 性能优化完成
+- Docker 部署就绪
+- 监控日志栈完整
+- 自动化测试就绪
+- 文档完善
+- **国际化支持** ✨ 新增
+- **用户分析** ✨ 新增
